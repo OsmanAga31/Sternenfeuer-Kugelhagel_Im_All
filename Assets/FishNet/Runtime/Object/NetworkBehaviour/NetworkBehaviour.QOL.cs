@@ -31,7 +31,7 @@ namespace FishNet.Object
         [Obsolete("Use IsClientInitialized. Note the difference between IsClientInitialized and IsClientStarted.")]
         public bool IsClient => IsClientInitialized;
         [Obsolete("Use IsServerInitialized. Note the difference between IsServerInitialized and IsServerStarted.")]
-        public bool IsServer => IsServerInitialized;
+        public bool IsServerInitalized => IsServerInitialized;
         #endregion
 
         /// <summary>

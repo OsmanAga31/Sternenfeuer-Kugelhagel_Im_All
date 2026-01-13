@@ -1,10 +1,16 @@
-using UnityEngine;
 using FishNet.Object;
+using FishNet.Object.Synchronizing;
+using UnityEngine;
 
 
 
 public class PlayerController : NetworkBehaviour
 {
+    [Header("SyncVars")]
+    private readonly SyncVar<string> playerName = new SyncVar<string>(); // name of the player
+    private readonly SyncVar<Color> playerColor = new SyncVar<Color>(); // color of the player
+    private readonly SyncVar<int> playerHP = new SyncVar<int>(); // health points of the player
+
     [SerializeField] private float playerSpeed;
     [SerializeField] private Transform playerTransform;
 

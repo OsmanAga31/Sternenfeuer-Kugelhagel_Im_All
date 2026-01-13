@@ -69,7 +69,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: -8584333144746569896
+  _initializedTimestamp: -8584333086687854333
   NetworkObserver: {fileID: 0}
   _enablePrediction: 0
   _predictionType: 0

@@ -29,8 +29,9 @@ public class PlayerController : NetworkBehaviour
 
     [SerializeField] private float playerSpeed;
     [SerializeField] private Transform playerTransform;
+    [SerializeField] private GameObject goToRotate; // part of the player to rotate towards mouse
 
-    public CharacterController cc;
+    //public CharacterController cc;
     private InputSystem_Actions inputActions;
     private Camera mainCamera;
     private MeshRenderer meshRenderer;
@@ -120,7 +121,8 @@ public class PlayerController : NetworkBehaviour
     private void Move(Vector2 _input) 
     {
         Vector3 move = new Vector3(_input.x, 0, _input.y);
-        cc.Move(move * playerSpeed * (float)TimeManager.TickDelta);
+        //cc.Move(move * playerSpeed * (float)TimeManager.TickDelta);
+        transform.Translate(move * playerSpeed * (float)TimeManager.TickDelta, Space.World);
     }
 
     [ServerRpc]
@@ -142,7 +144,7 @@ public class PlayerController : NetworkBehaviour
         if (direction.sqrMagnitude > 0.01f) 
         {
             Quaternion targetRotation = Quaternion.LookRotation(direction);
-            transform.rotation = targetRotation;
+            goToRotate.transform.rotation = targetRotation;
         }
     }
 

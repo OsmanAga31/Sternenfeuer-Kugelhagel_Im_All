@@ -7,6 +7,9 @@ using UnityEngine;
 
 public class PlayerController : NetworkBehaviour
 {
+    [Header("UI")]
+    [SerializeField] private NameDisplay nameDisplay; // reference to the NameDisplay script
+
     [Header("SyncVars")]
     private readonly SyncVar<string> playerName = new SyncVar<string>(); // name of the player
     private readonly SyncVar<Color> playerColor = new SyncVar<Color>(); // color of the player
@@ -54,6 +57,26 @@ public class PlayerController : NetworkBehaviour
         {
             ApplyColor(playerColor.Value);
         }
+
+        ///TODO:
+        
+        // --------------- Name Handling --------------- 
+        // GameManager or Login system should be implemented to get player names
+        //// set player name 
+        //if (IsOwner)
+        //{
+        //   // get name from for example Login or input field
+        //   string username = MyGameManager.LocalUserName; // placeholder for actual name retrieval
+
+        //   // fill SyncVar
+        //   SetPlayerNameServerRPC(username);
+
+        //   // update local UI instantly
+        //   nameDisplay.SetName(username);
+        //}
+
+        // react to name changes so other clients see the updated name
+        // playerName.OnChange += OnPlayerNameChanged;
     }
 
     private void OnServerTick() 

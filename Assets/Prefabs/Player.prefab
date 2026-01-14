@@ -28,7 +28,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3519412677697159545}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: -0.857}
+  m_LocalPosition: {x: 0, y: 0, z: -1.027}
   m_LocalScale: {x: 0.01, y: 0.01, z: 0.01}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -267,6 +267,7 @@ GameObject:
   - component: {fileID: 3862341120793199182}
   - component: {fileID: 7206726085603385820}
   - component: {fileID: 6834819549347139725}
+  - component: {fileID: 578427369439287581}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -538,6 +539,7 @@ MonoBehaviour:
   _componentIndexCache: 1
   _addedNetworkObject: {fileID: 2799674862731037817}
   _networkObjectCache: {fileID: 2799674862731037817}
+  nameDisplay: {fileID: 0}
   playerSpeed: 10
   playerTransform: {fileID: 8682092917843314588}
   cc: {fileID: 3862341120793199182}
@@ -560,6 +562,33 @@ MonoBehaviour:
   _tickRate: 30
   _pingInterval: 1
   _physicsMode: 0
+--- !u!54 &578427369439287581
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5750054914299536535}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1001 &1639280201880450081
 PrefabInstance:
   m_ObjectHideFlags: 0

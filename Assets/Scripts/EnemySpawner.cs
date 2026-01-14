@@ -6,6 +6,9 @@ public class EnemySpawner : NetworkBehaviour
 {
     [SerializeField] private GameObject enemyPrefab;
 
+    private float spawnRadius = 15f;
+    private string targetPoolName = "Enemies";
+
     public override void OnStartServer()
     {
         base.OnStartServer();
@@ -15,10 +18,24 @@ public class EnemySpawner : NetworkBehaviour
     [Server]
     private void SpawnEnemy()
     {
-        Vector3 spawnPosition = new Vector3(Random.Range(-5f, 5f), 0.5f, Random.Range(-5f, 5f));
-        GameObject enemyInstance = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
-        Spawn(enemyInstance);
-        Debug.Log("Enemy spawned on server. " + enemyInstance.GetInstanceID());
+        Vector3 spawnPosition = new Vector3(Random.Range(-spawnRadius, spawnRadius), 0.5f, Random.Range(-spawnRadius, spawnRadius));
+
+        //GameObject enemyInstance = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
+        //Spawn(enemyInstance);
+
+        GameObject poolEnemy = ObjectPoolManager.Instance.Get(targetPoolName);
+        Spawn(poolEnemy);
+
+        if (poolEnemy == null)
+        {
+            Debug.LogWarning("No enemy available in pool.");
+            return;
+        }
+
+        poolEnemy.transform.position = spawnPosition;
+        poolEnemy.SetActive(true);
+
+        Debug.Log("Enemy spawned on server. " + poolEnemy.name);
     }
 
     private IEnumerator SpawnDelayed()

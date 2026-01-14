@@ -12,6 +12,7 @@ public class Bullet : NetworkBehaviour
     private int damage;
 
     private Coroutine bul;
+    private bool isOnTickSubscribed = false;
 
 
     //public override void OnStartServer()
@@ -31,8 +32,21 @@ public class Bullet : NetworkBehaviour
         this.speed = speed;
         this.lifeTime = lifeTime;
 
-        //bul = StartCoroutine(BulletLife());
-        TimeManager.OnTick += OnTick;
+        bul = StartCoroutine(BulletLife());
+        if (!isOnTickSubscribed)
+        {
+            TimeManager.OnTick += OnTick;
+            isOnTickSubscribed = true;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (isOnTickSubscribed)
+        {
+            TimeManager.OnTick -= OnTick;
+            isOnTickSubscribed = false;
+        }
     }
 
     private void OnTriggerEnter(Collider other)

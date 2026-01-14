@@ -3,19 +3,19 @@ using FishNet.Object;
 using System.Collections;
 using System;
 using FishNet.Object.Synchronizing;
+using System.Runtime.CompilerServices;
 
 public class Enemy1 : NetworkBehaviour, IDamagable
 {
     private int pos = 4;
-    private int posCount = 0;
-    private Vector3[] posXs;
 
     private Coroutine shooter;
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private float shootDelay;
-    [SerializeField] private int posINdex = 0;
     [SerializeField, Min(2)] private float speedRange;
     private int speed;
+    private bool isSubscribedToOnTick_GetPlayers = false;
+    private bool isSubscribedToOnTick_MoveTowardsPlayer = false;
 
     private GameObject playerLocation;
 
@@ -28,28 +28,52 @@ public class Enemy1 : NetworkBehaviour, IDamagable
     {
         base.OnStartServer();
 
+        if (!isSubscribedToOnTick_GetPlayers)
+        {
+            TimeManager.OnTick += GetClosestPlayers;
+            isSubscribedToOnTick_GetPlayers = true;
+        }
         speed = UnityEngine.Random.Range(2, (int)speedRange);
-        posXs = new Vector3[] { new Vector3(pos, 0.5f, 0), new Vector3(-pos, 0.5f, 0), new Vector3(0, 0.5f, pos), new Vector3(0, 0.5f, -pos) };
 
-        TimeManager.OnTick += MoveOnTick;
+        Debug.Log("Server Initialized - Enemy1");
+    }
 
+    private void OnEnable()
+    {
+        speed = UnityEngine.Random.Range(2, (int)speedRange);
+
+    }
+
+    [Server]
+    private void GetClosestPlayers()
+    {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        if (players.Length == 0)
+            return;
+
         Array.Sort(players, (a, b) => {
-            
+
             float distA = Vector3.Distance(a.transform.position, transform.position);
             float distB = Vector3.Distance(b.transform.position, transform.position);
             return distA.CompareTo(distB);
 
         });
 
-        if (players.Length > 0)
-        {
-            playerLocation = players[0];
-        }
+        playerLocation = players[0];
 
         shooter = StartCoroutine(Shoot());
 
-        Debug.Log("Server Initialized - Enemy1");
+        if (isSubscribedToOnTick_GetPlayers)
+        {
+            TimeManager.OnTick -= GetClosestPlayers;
+            isSubscribedToOnTick_GetPlayers = false;
+        }
+        if (!isSubscribedToOnTick_MoveTowardsPlayer)
+        {
+            TimeManager.OnTick += MoveOnTick;
+            isSubscribedToOnTick_MoveTowardsPlayer = true;
+        }
+
 
 
     }
@@ -57,20 +81,29 @@ public class Enemy1 : NetworkBehaviour, IDamagable
     public override void OnStopServer()
     {
         base.OnStopServer();
-        TimeManager.OnTick -= MoveOnTick;
 
-        Die();
+        if (isSubscribedToOnTick_GetPlayers)
+        {
+            TimeManager.OnTick -= GetClosestPlayers;
+            isSubscribedToOnTick_GetPlayers = false;
+        }
+        if (isSubscribedToOnTick_MoveTowardsPlayer)
+        {
+            TimeManager.OnTick -= MoveOnTick;
+            isSubscribedToOnTick_MoveTowardsPlayer = false;
+        }
 
         Debug.Log("Server Stopped - Enemy1");
     }
 
+    // nur wenn Enemy wirklich stirbt und nicht bei OnStopServer
     private void Die()
     {
         TimeManager.OnTick -= MoveOnTick;
         if (shooter != null)
             StopCoroutine(shooter);
         Despawn(DespawnType.Destroy);
-        Destroy(gameObject);
+        //Destroy(gameObject);
         Debug.Log("Enemy1 Destroyed");
     }
 
@@ -80,7 +113,7 @@ public class Enemy1 : NetworkBehaviour, IDamagable
             yield return new WaitForSeconds(shootDelay);
             GameObject bullet = Instantiate(bulletPrefab, transform.position + transform.forward, transform.rotation);
             Spawn(bullet);
-            bullet.GetComponent<Bullet>().ShootBullet(5, 0.2f, 5f);
+            bullet.GetComponent<Bullet>().ShootBullet(5, speed+2f, 5f);
         }
     }
 
@@ -97,16 +130,11 @@ public class Enemy1 : NetworkBehaviour, IDamagable
     [Server]
     private void MoveOnTick()
     {
-        //Vector3 distance = posXs[posINdex] - transform.position;
+        Debug.Log(name + " Moving towards player");
         Vector3 distance = playerLocation.transform.position - transform.position;
 
         if (distance.sqrMagnitude >= 1f)
             MoveToPosition();
-        //Debug.Log("Distance to target: " + distance.sqrMagnitude);
-        //if (distance.sqrMagnitude < 0.5f)
-        //{
-        //    posINdex = ++posINdex % posXs.Length;
-        //}
     }
 
     [Server]

@@ -30,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 2970889875794532424}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.5, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -54,7 +54,6 @@ MonoBehaviour:
   _networkObjectCache: {fileID: 7944819583751345781}
   bulletPrefab: {fileID: 9105152008401707231, guid: 7b3c2635f570805418a2938f26035e70, type: 3}
   shootDelay: 1
-  posINdex: 0
   speedRange: 4
 --- !u!114 &7944819583751345781
 MonoBehaviour:
@@ -87,7 +86,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: -8584333009647799368
+  _initializedTimestamp: -8584332069009489518
   NetworkObserver: {fileID: 0}
   _enablePrediction: 0
   _predictionType: 0

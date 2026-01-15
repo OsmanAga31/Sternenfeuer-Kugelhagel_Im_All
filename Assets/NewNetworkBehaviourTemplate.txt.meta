@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
 guid: be07712e45d5da84cbc7ffe27c66a8b5
+=======
+guid: d96c9abf2dc148f458558690ccaf5fa9
+>>>>>>> Enemy
 TextScriptImporter:
   externalObjects: {}
   userData: 

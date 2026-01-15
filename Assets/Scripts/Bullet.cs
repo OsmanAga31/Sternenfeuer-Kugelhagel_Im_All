@@ -14,12 +14,6 @@ public class Bullet : NetworkBehaviour
     private Coroutine bul;
     private bool isOnTickSubscribed = false;
 
-
-    //public override void OnStartServer()
-    //{
-    //    base.OnStartServer();
-    //}
-
     private void OnTick()
     {
         transform.Translate((speed * (float)TimeManager.TickDelta) * Vector3.forward, Space.Self);
@@ -54,25 +48,24 @@ public class Bullet : NetworkBehaviour
         if (!IsServerInitialized || other.tag != "Player")
             return;
 
-        //other.GetComponent<IDamagable>()?.Damage(10);
-        DestroyBullet();
+        other.GetComponent<IDamagable>()?.Damage(10);
+        DeactivateBullet();
     }
 
     [Server]
     private IEnumerator BulletLife()
     {
         yield return new WaitForSeconds(lifeTime);
-        DestroyBullet();
+        DeactivateBullet();
     }
 
     [Server]
-    private void DestroyBullet()
+    private void DeactivateBullet()
     {
         if (bul != null)
             StopCoroutine(bul);
         TimeManager.OnTick -= OnTick;
-        //Destroy(gameObject);
-        Despawn(DespawnType.Destroy);
+        gameObject.SetActive(false);
     }
 
 }

@@ -6,12 +6,26 @@ public class EnemySpawner : NetworkBehaviour
 {
     [SerializeField] private GameObject enemyPrefab;
 
+    [SerializeField] private int minPlayersToStart = 1;
+    [SerializeField] private float spawnInterval = 1f;
     private float spawnRadius = 15f;
     private string targetPoolName = "Enemies";
 
     public override void OnStartServer()
     {
         base.OnStartServer();
+        StartCoroutine(CheckForPlayers());
+    }
+
+    private IEnumerator CheckForPlayers()
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        while (players.Length < minPlayersToStart)
+        {
+            players = GameObject.FindGameObjectsWithTag("Player");
+            yield return null;
+        }
+
         StartCoroutine(SpawnDelayed());
     }
 
@@ -19,9 +33,6 @@ public class EnemySpawner : NetworkBehaviour
     private void SpawnEnemy()
     {
         Vector3 spawnPosition = new Vector3(Random.Range(-spawnRadius, spawnRadius), 0.5f, Random.Range(-spawnRadius, spawnRadius));
-
-        //GameObject enemyInstance = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
-        //Spawn(enemyInstance);
 
         GameObject poolEnemy = ObjectPoolManager.Instance.Get(targetPoolName);
         Spawn(poolEnemy);
@@ -42,7 +53,7 @@ public class EnemySpawner : NetworkBehaviour
     {
         for (int i = 0; i < 10; i++)
         {
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(spawnInterval);
             SpawnEnemy();
         }
     }

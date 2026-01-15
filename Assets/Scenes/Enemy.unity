@@ -724,7 +724,7 @@ MonoBehaviour:
     canExpand: 0
     Name: Enemies
   - ObjectToPool: {fileID: 9105152008401707231, guid: 7b3c2635f570805418a2938f26035e70, type: 3}
-    PrewarmAmount: 100
+    PrewarmAmount: 200
     canExpand: 1
     Name: Bullets
 --- !u!114 &1569161853
@@ -796,6 +796,8 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 1569161853}
   _networkObjectCache: {fileID: 0}
   enemyPrefab: {fileID: 2970889875794532424, guid: f7448500b5ce81b4684995b397f91da5, type: 3}
+  minPlayersToStart: 2
+  spawnInterval: 3
 --- !u!4 &1569161855
 Transform:
   m_ObjectHideFlags: 0

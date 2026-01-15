@@ -7,12 +7,12 @@ using System.Runtime.CompilerServices;
 
 public class Enemy1 : NetworkBehaviour, IDamagable
 {
-    private int pos = 4;
-
-    private Coroutine shooter;
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private float shootDelay;
     [SerializeField, Min(2)] private float speedRange;
+
+    private Coroutine shooter;
+    private string targetPoolName = "Bullets";
     private int speed;
     private bool isSubscribedToOnTick_GetPlayers = false;
     private bool isSubscribedToOnTick_MoveTowardsPlayer = false;
@@ -107,19 +107,32 @@ public class Enemy1 : NetworkBehaviour, IDamagable
         Debug.Log("Enemy1 Destroyed");
     }
 
+    [Server]
     private IEnumerator Shoot()
     {
         while (true) { 
             yield return new WaitForSeconds(shootDelay);
-            GameObject bullet = Instantiate(bulletPrefab, transform.position + transform.forward, transform.rotation);
-            Spawn(bullet);
-            bullet.GetComponent<Bullet>().ShootBullet(5, speed+2f, 5f);
-        }
-    }
+            //GameObject bullet = Instantiate(bulletPrefab, , transform.rotation);
+            //Spawn(bullet);
+            //bullet.GetComponent<Bullet>().ShootBullet(5, speed+2f, 5f);
 
-    public override void OnStartClient()
-    {
-        base.OnStartClient();
+            Vector3 spawnPosition = transform.position + transform.forward;
+
+            GameObject poolBullet = ObjectPoolManager.Instance.Get(targetPoolName);
+            if (!poolBullet.GetComponent<NetworkObject>().IsSpawned) 
+                Spawn(poolBullet);
+
+            if (poolBullet == null)
+            {
+                Debug.LogWarning("No Bullet available in pool.");
+                continue;
+            }
+
+            poolBullet.transform.position = spawnPosition;
+            poolBullet.SetActive(true);
+            poolBullet.transform.rotation = transform.rotation;
+            poolBullet.GetComponent<Bullet>().ShootBullet(5, speed + 2f, 5f);
+        }
     }
 
     private void Start()

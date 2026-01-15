@@ -205,6 +205,6 @@ public class PlayerController : NetworkBehaviour
         playerColor.OnChange -= OnPlayerColorChanged;
     }
 
-    /// TODO: Damage, Health
+    /// TODO: Damage/ Health System, Name Handling
     /// IDamageable interface übernehmen
 }

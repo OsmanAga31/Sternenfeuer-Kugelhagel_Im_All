@@ -4,6 +4,7 @@ using System.Collections;
 using System;
 using FishNet.Object.Synchronizing;
 using System.Runtime.CompilerServices;
+using FishNet;
 
 public class Enemy1 : NetworkBehaviour, IDamagable
 {
@@ -102,8 +103,7 @@ public class Enemy1 : NetworkBehaviour, IDamagable
         TimeManager.OnTick -= MoveOnTick;
         if (shooter != null)
             StopCoroutine(shooter);
-        Despawn(DespawnType.Destroy);
-        //Destroy(gameObject);
+        Despawn(DespawnType.Pool);
         Debug.Log("Enemy1 Destroyed");
     }
 
@@ -112,26 +112,18 @@ public class Enemy1 : NetworkBehaviour, IDamagable
     {
         while (true) { 
             yield return new WaitForSeconds(shootDelay);
-            //GameObject bullet = Instantiate(bulletPrefab, , transform.rotation);
-            //Spawn(bullet);
-            //bullet.GetComponent<Bullet>().ShootBullet(5, speed+2f, 5f);
 
             Vector3 spawnPosition = transform.position + transform.forward;
 
-            GameObject poolBullet = ObjectPoolManager.Instance.Get(targetPoolName);
-            if (!poolBullet.GetComponent<NetworkObject>().IsSpawned) 
-                Spawn(poolBullet);
-
-            if (poolBullet == null)
-            {
-                Debug.LogWarning("No Bullet available in pool.");
-                continue;
-            }
+            NetworkObject poolBullet = NetworkManager.GetPooledInstantiated(NewObjectPoolManager.Instance.getObject(PoolObjectType.Bullet), true);
 
             poolBullet.transform.position = spawnPosition;
-            poolBullet.SetActive(true);
             poolBullet.transform.rotation = transform.rotation;
-            poolBullet.GetComponent<Bullet>().ShootBullet(5, speed + 2f, 5f);
+
+            Spawn(poolBullet);
+
+            poolBullet.gameObject.GetComponent<Bullet>().ShootBullet(5, speed + 2f, 5f);
+
         }
     }
 
@@ -143,7 +135,7 @@ public class Enemy1 : NetworkBehaviour, IDamagable
     [Server]
     private void MoveOnTick()
     {
-        Debug.Log(name + " Moving towards player");
+        //Debug.Log(name + " Moving towards player");
         Vector3 distance = playerLocation.transform.position - transform.position;
 
         if (distance.sqrMagnitude >= 1f)

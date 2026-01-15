@@ -1,3 +1,7 @@
+using FishNet;
+using FishNet.Object;
+using FishNet.Utility.Performance;
+using System;
 using System.Collections;
 using System.Linq;
 using UnityEngine;
@@ -5,7 +9,7 @@ using UnityEngine;
 /// Tutorial by Boundfox Studios https://www.youtube.com/watch?v=6kjPUmvvLoM 
 
 // Von Naomi
-public class ObjectPoolManager : MonoBehaviour
+public class ObjectPoolManager : NetworkBehaviour
 {
     public ObjectPool[] Pools; // all existing object pools
 
@@ -39,14 +43,21 @@ public class ObjectPoolManager : MonoBehaviour
         {
             Debug.Log($"Prewarming object pool {pool.Name}...");
 
+            DefaultObjectPool pooll = InstanceFinder.NetworkManager.GetComponent<DefaultObjectPool>();
+            pooll.CacheObjects(pool.ObjectToPool.GetComponent<NetworkObject>(), pool.PrewarmAmount, IsServerInitialized);
+
             // loop that generates number of objects 
             for(var i = 0; i < pool.PrewarmAmount; i++)
             {
                 CreateInstanceAndAddToPool(pool); // create object
+                NetworkObject instance = NetworkManager.GetPooledInstantiated(pool.ObjectToPool.GetComponent<NetworkObject>(), true);
 
                 yield return null; // create one single object per frame 
             }
+
+            
         }
+
 
         Debug.Log("Prewarming done.");
     }

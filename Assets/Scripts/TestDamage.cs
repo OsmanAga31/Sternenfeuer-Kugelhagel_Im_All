@@ -12,7 +12,7 @@ public class TestDamage : NetworkBehaviour
     [Server]
     private void DoDamge(Collider other)
     {
-        other.GetComponent<IDamagable>()?.Damage(10);
+        other.GetComponent<IDamagable>()?.Damage(100);
     }
 
 }

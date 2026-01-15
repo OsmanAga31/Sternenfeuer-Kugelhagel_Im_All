@@ -22,6 +22,9 @@ public class Bullet : NetworkBehaviour
     [Server]
     public void ShootBullet(int damage, float speed, float lifeTime)
     {
+        if (!IsServerInitialized)
+            return;
+
         this.damage = damage;
         this.speed = speed;
         this.lifeTime = lifeTime;
@@ -45,11 +48,13 @@ public class Bullet : NetworkBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        
         if (!IsServerInitialized || other.tag != "Player")
             return;
 
-        other.GetComponent<IDamagable>()?.Damage(10);
+        //asdas
         DeactivateBullet();
+        other.GetComponent<IDamagable>()?.Damage(10);
     }
 
     [Server]
@@ -63,9 +68,18 @@ public class Bullet : NetworkBehaviour
     private void DeactivateBullet()
     {
         if (bul != null)
+        {
             StopCoroutine(bul);
-        TimeManager.OnTick -= OnTick;
-        gameObject.SetActive(false);
+            bul = null;
+        }
+
+        if (isOnTickSubscribed)
+        {
+            TimeManager.OnTick -= OnTick;
+            isOnTickSubscribed = false;
+        }
+
+        Despawn(DespawnType.Pool);
     }
 
 }

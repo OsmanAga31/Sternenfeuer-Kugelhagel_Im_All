@@ -8,7 +8,8 @@ public class EnemySpawner : NetworkBehaviour
 
     [SerializeField] private int minPlayersToStart = 1;
     [SerializeField] private float spawnInterval = 1f;
-    private float spawnRadius = 15f;
+    [SerializeField] private float spawnRadius = 50f;
+    [SerializeField] private int spawnCountEnemies = 10;
     private string targetPoolName = "Enemies";
 
     public override void OnStartServer()
@@ -34,24 +35,18 @@ public class EnemySpawner : NetworkBehaviour
     {
         Vector3 spawnPosition = new Vector3(Random.Range(-spawnRadius, spawnRadius), 0.5f, Random.Range(-spawnRadius, spawnRadius));
 
-        GameObject poolEnemy = ObjectPoolManager.Instance.Get(targetPoolName);
-        Spawn(poolEnemy);
-
-        if (poolEnemy == null)
-        {
-            Debug.LogWarning("No enemy available in pool.");
-            return;
-        }
+        NetworkObject poolEnemy = NetworkManager.GetPooledInstantiated(NewObjectPoolManager.Instance.getObject(PoolObjectType.Enemy1), true);
 
         poolEnemy.transform.position = spawnPosition;
-        poolEnemy.SetActive(true);
+
+        Spawn(poolEnemy);
 
         Debug.Log("Enemy spawned on server. " + poolEnemy.name);
     }
 
     private IEnumerator SpawnDelayed()
     {
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < spawnCountEnemies; i++)
         {
             yield return new WaitForSeconds(spawnInterval);
             SpawnEnemy();

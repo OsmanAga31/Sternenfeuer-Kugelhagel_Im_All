@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6325050639932891261}
   - component: {fileID: 6488348057563329279}
   - component: {fileID: 1243057757500472684}
-  - component: {fileID: 4927591031280528406}
+  - component: {fileID: 5294962965244432468}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -46,12 +46,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b7643d0fff0b9646b7fdea181170f41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 255
+  _componentIndexCache: 0
   _addedNetworkObject: {fileID: 1243057757500472684}
-  _networkObjectCache: {fileID: 0}
+  _networkObjectCache: {fileID: 1243057757500472684}
   enemyPrefab: {fileID: 2970889875794532424, guid: f7448500b5ce81b4684995b397f91da5, type: 3}
-  minPlayersToStart: 2
+  minPlayersToStart: 1
   spawnInterval: 3
+  spawnRadius: 15
 --- !u!114 &1243057757500472684
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -70,7 +71,9 @@ MonoBehaviour:
   <ComponentIndex>k__BackingField: 0
   <PredictedSpawn>k__BackingField: {fileID: 0}
   <PredictedOwner>k__BackingField: {fileID: 0}
-  NetworkBehaviours: []
+  NetworkBehaviours:
+  - {fileID: 6488348057563329279}
+  - {fileID: 0}
   InitializedParentNetworkBehaviour: {fileID: 0}
   InitializedNestedNetworkObjects: []
   RuntimeParentNetworkBehaviour: {fileID: 0}
@@ -81,7 +84,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: 0
+  _initializedTimestamp: -8584331229512465523
   NetworkObserver: {fileID: 0}
   _enablePrediction: 0
   _predictionType: 0
@@ -96,16 +99,16 @@ MonoBehaviour:
   _spectatorInterpolation: 2
   _enableTeleport: 0
   _teleportThreshold: 1
-  <PrefabId>k__BackingField: 65535
+  <PrefabId>k__BackingField: 3
   <SpawnableCollectionId>k__BackingField: 0
-  <AssetPathHash>k__BackingField: 16599400369318989593
+  <AssetPathHash>k__BackingField: 4985958199745294865
   SceneId: 0
   SerializedTransformProperties:
     Position: {x: 0, y: 0, z: 0}
-    Rotation: {x: 0, y: 0, z: 0, w: 0}
-    Scale: {x: 0, y: 0, z: 0}
-    IsValid: 0
---- !u!114 &4927591031280528406
+    Rotation: {x: 0, y: 0, z: 0, w: 1}
+    Scale: {x: 1, y: 1, z: 1}
+    IsValid: 1
+--- !u!114 &5294962965244432468
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -114,15 +117,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1103054617333583936}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9086910e11c551240bc3a9d57b14deb8, type: 3}
+  m_Script: {fileID: 11500000, guid: 1df2c1634dd4c44429f01ce7237b10e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Pools:
-  - ObjectToPool: {fileID: 2970889875794532424, guid: f7448500b5ce81b4684995b397f91da5, type: 3}
-    PrewarmAmount: 10
-    canExpand: 0
-    Name: Enemies
-  - ObjectToPool: {fileID: 9105152008401707231, guid: 7b3c2635f570805418a2938f26035e70, type: 3}
-    PrewarmAmount: 200
-    canExpand: 1
-    Name: Bullets
+  _componentIndexCache: 255
+  _addedNetworkObject: {fileID: 1243057757500472684}
+  _networkObjectCache: {fileID: 0}
+  ObjectsToSpawn:
+  - {fileID: 9105152008401707231, guid: 7b3c2635f570805418a2938f26035e70, type: 3}
+  - {fileID: 2970889875794532424, guid: f7448500b5ce81b4684995b397f91da5, type: 3}
+  prewarmAmount: f401000032000000

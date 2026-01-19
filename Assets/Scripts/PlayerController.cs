@@ -1,11 +1,10 @@
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
-//using NUnit.Framework.Constraints;
 using UnityEngine;
 
 
 
-public class PlayerController : NetworkBehaviour
+public class PlayerController : NetworkBehaviour, IDamagable
 {
     [Header("UI")]
     [SerializeField] private NameDisplay nameDisplay; // reference to the NameDisplay script
@@ -13,7 +12,13 @@ public class PlayerController : NetworkBehaviour
     [Header("SyncVars")]
     private readonly SyncVar<string> playerName = new SyncVar<string>(); // name of the player
     private readonly SyncVar<Color> playerColor = new SyncVar<Color>(); // color of the player
-    private readonly SyncVar<int> playerHP = new SyncVar<int>(); // health points of the player
+
+    [Header("Player Stats")]
+    private const int maxHP = 100;
+    private readonly SyncVar<int> playerHP = new SyncVar<int>(100); // health points of the player
+    public int CurrentHP => playerHP.Value;
+    public int MaxHP => maxHP;
+    public System.Action<int, int> OnHealthChanged; 
 
     // available colors for players
     private static readonly Color[] availableColors = new Color[]
@@ -59,8 +64,11 @@ public class PlayerController : NetworkBehaviour
             ApplyColor(playerColor.Value);
         }
 
+        // react to HP changes
+        playerHP.OnChange += OnPlayerHPChanged;
+
         ///TODO:
-        
+
         // --------------- Name Handling --------------- 
         // GameManager or Login system should be implemented to get player names
         //// set player name 
@@ -194,6 +202,37 @@ public class PlayerController : NetworkBehaviour
 
     #endregion
 
+    #region Health / IDamagable Implementation
+
+    [Server]
+    // Implement Damage method from IDamagable interface
+    public void Damage(int damageAmount)
+    {
+        // only process damage on server
+        if (!IsServerInitialized) return;
+
+        // reduce player HP
+        playerHP.Value -= damageAmount;
+        if(playerHP.Value < 0 ) playerHP.Value = 0;
+        Debug.Log($"[Server] Player damaged by {damageAmount}, current HP: {playerHP.Value}");
+
+        // check for death
+        if (playerHP.Value <= 0)
+        {
+            Debug.Log($"[Server] Player has died.");
+            // Handle player death (respawn, game over, etc.)
+        }
+    }
+
+    // Callback for when player HP changes
+    private void OnPlayerHPChanged(int previous, int current, bool asServer)
+    {
+        OnHealthChanged?.Invoke(previous, current); // notify subscribers about HP change
+        Debug.Log($"[Client] Player HP changed from {previous} to: {current}");
+    }
+
+    #endregion
+
     private void OnDestroy() 
     {
         if (TimeManager != null)
@@ -203,8 +242,8 @@ public class PlayerController : NetworkBehaviour
 
         // unsubscribe from SyncVar changes
         playerColor.OnChange -= OnPlayerColorChanged;
-    }
 
-    /// TODO: Damage/ Health System, Name Handling
-    /// IDamageable interface übernehmen
+        // unsubscribe from HP changes
+        playerHP.OnChange -= OnPlayerHPChanged;
+    }
 }

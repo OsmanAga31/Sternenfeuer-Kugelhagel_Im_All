@@ -149,11 +149,6 @@ public class Enemy1 : NetworkBehaviour, IDamagable
         }
     }
 
-    private void Start()
-    {
-        health.OnChange += OnHealthChanged;
-    }
-
     [Server]
     private void MoveOnTick()
     {
@@ -183,12 +178,6 @@ public class Enemy1 : NetworkBehaviour, IDamagable
         {
             Die();
         }
-    }
-
-    private void OnHealthChanged(int previous, int current, bool asServer)
-    {
-        // This method is called on both server and clients when health changes.
-        Debug.Log($"The Enemy \"{gameObject.name}\" Health changed from {previous} to {current}. Health: {current}/{maxHealth} which is perc: {(current * 100) / maxHealth}%");
     }
 
     #endregion

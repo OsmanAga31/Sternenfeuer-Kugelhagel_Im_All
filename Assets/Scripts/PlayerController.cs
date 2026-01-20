@@ -294,6 +294,7 @@ public class PlayerController : NetworkBehaviour, IDamagable
         {
             Debug.Log($"[Server] Player has died.");
             // Handle player death (respawn, game over, etc.)
+            ScoreManager.Instance?.CalculateFinalScore();
         }
     }
 

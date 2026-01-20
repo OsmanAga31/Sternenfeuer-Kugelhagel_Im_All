@@ -1380,10 +1380,6 @@ PrefabInstance:
       value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 6488348057563329279, guid: 06e85234fb5849b47985446b1dc86af6, type: 3}
-      propertyPath: spawnInterval
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 6488348057563329279, guid: 06e85234fb5849b47985446b1dc86af6, type: 3}
       propertyPath: minSpawnRadius
       value: 30
       objectReference: {fileID: 0}

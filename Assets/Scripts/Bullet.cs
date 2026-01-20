@@ -79,8 +79,8 @@ public class Bullet : NetworkBehaviour
 
         if (shouldDamage)
         {
-            DeactivateBullet();
-            other.GetComponent<IDamagable>()?.Damage(damage);
+           other.GetComponent<IDamagable>()?.Damage(damage);
+           DeactivateBullet();
         }
     }
 

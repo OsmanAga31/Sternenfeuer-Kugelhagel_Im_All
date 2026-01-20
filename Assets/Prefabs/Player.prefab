@@ -435,7 +435,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: -8584327055650041533
+  _initializedTimestamp: -8584326922652226756
   NetworkObserver: {fileID: 0}
   _enablePrediction: 0
   _predictionType: 0
@@ -632,6 +632,13 @@ MonoBehaviour:
   bulletLifeTime: 3
   fireRate: 0.2
   firePoint: {fileID: 3573563074483418803}
+  currentPattern: 0
+  spreadAngle: 30
+  spiralBulletCount: 12
+  spiralTightenSpeed: 5
+  waveBulletCount: 12
+  waveAmplitude: 20
+  waveFrequenzy: 0.7
   playerSpeed: 10
   playerTransform: {fileID: 8682092917843314588}
   goToRotate: {fileID: 4156722877576214565}

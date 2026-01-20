@@ -1,8 +1,16 @@
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
+using System.Collections;
 using UnityEngine;
 
-
+public enum ShootPattern
+{
+    Straight,
+    Spread,
+    Circular,
+    Spiral,
+    Wave
+}
 
 public class PlayerController : NetworkBehaviour, IDamagable
 {
@@ -18,7 +26,38 @@ public class PlayerController : NetworkBehaviour, IDamagable
     private readonly SyncVar<int> playerHP = new SyncVar<int>(100); // health points of the player
     public int CurrentHP => playerHP.Value;
     public int MaxHP => maxHP;
-    public System.Action<int, int> OnHealthChanged; 
+    public System.Action<int, int> OnHealthChanged;
+
+    [Header("Shooting")]
+    [SerializeField] private int bulletDamage = 10;
+    [SerializeField] private float bulletSpeed = 20f;
+    [SerializeField] private float bulletLifeTime = 3f;
+    [SerializeField] private float fireRate = 0.1f; // seconds between shots
+    [SerializeField] private Transform firePoint; // spawn point for bullet
+
+    [Header("Shoot Patterns")]
+    [SerializeField] private ShootPattern currentPattern = ShootPattern.Straight;    
+    // Spread settings
+    [SerializeField] private float spreadAngle = 30f;
+    [SerializeField] private float spreadCooldown = 0.8f;
+
+    // Spiral settings
+    [SerializeField, Range(6, 20)] private int spiralBulletCount = 12;
+    [SerializeField] private float spiralTightenSpeed = 5f;
+    [SerializeField] private float spiralCooldown = 1.5f;
+
+    // Wave settings
+    [SerializeField, Range(3, 12)] private int waveBulletCount = 12;
+    [SerializeField] private float waveAmplitude = 20f;
+    [SerializeField] private float waveFrequenzy = 0.7f;
+    [SerializeField] private float waveCooldown = 1.2f;
+
+    private float lastFireTime;
+
+    // seperate cooldown timersper pattern (server-only)
+    private float lastSpreadTime;
+    private float lastSpiralTime;
+    private float lastWaveTime;
 
     // available colors for players
     private static readonly Color[] availableColors = new Color[]
@@ -36,7 +75,6 @@ public class PlayerController : NetworkBehaviour, IDamagable
     [SerializeField] private Transform playerTransform;
     [SerializeField] private GameObject goToRotate; // part of the player to rotate towards mouse
 
-    //public CharacterController cc;
     private InputSystem_Actions inputActions;
     private Camera mainCamera;
     private MeshRenderer meshRenderer;
@@ -90,17 +128,47 @@ public class PlayerController : NetworkBehaviour, IDamagable
 
     private void OnServerTick() 
     {
-        // read movement input 
-        Vector2 movementInput = inputActions.Player.Move.ReadValue<Vector2>();
-
         // if we are the client and owner, request move
-        if (IsClientInitialized && IsOwner){
-
+        if (IsClientInitialized && IsOwner)
+        {
+            // read movement input 
+            Vector2 movementInput = inputActions.Player.Move.ReadValue<Vector2>();
             MoveServerRPC(movementInput);
 
             // send mouse position to server for rotation
             Vector3 mouseWorldPos = GetMouseWorldPosition();
             RotateServerRPC(mouseWorldPos);
+
+            // shooting input
+            if (inputActions.Player.Shoot.IsPressed() && Time.time >= lastFireTime + fireRate)
+            {
+                lastFireTime = Time.time;
+                ShootServerRPC();
+            }
+        }
+
+    }
+
+    private void Update()
+    {
+        // only the player controlling this character can change patterns (not other clients)
+        if (!IsOwner) return;
+
+        if (inputActions.Player.PatternStraight.WasPressedThisFrame())
+        {
+            ChangePatternServerRPC(ShootPattern.Straight);
+        }
+        else if (inputActions.Player.PatternSpread.WasPressedThisFrame())
+        {
+            ChangePatternServerRPC(ShootPattern.Spread);
+        }
+        else if (inputActions.Player.PatternSpiral.WasPressedThisFrame())
+        {
+            ChangePatternServerRPC(ShootPattern.Spiral);
+        }
+        else if (inputActions.Player.PatternWave.WasPressedThisFrame())
+        {
+            ChangePatternServerRPC(ShootPattern.Wave);
         }
     }
 
@@ -169,18 +237,23 @@ public class PlayerController : NetworkBehaviour, IDamagable
     private void AssignPlayerColor() 
     {
         // assign next available color and put it in the SyncVar
+        // pick next color from color list
         Color assignedColor = availableColors[colorIndex % availableColors.Length];
-        colorIndex++;
+        colorIndex++; // move to next color for next player
 
         Debug.Log($"[Server] Assigning color: {assignedColor} to player");
 
+        // save color in SyncVar
         playerColor.Value = assignedColor;
 
+        // apply color immediately on server
         ApplyColor(assignedColor);
     }
 
+    // called automatically when playerColor SyncVar changes (on ALL clients)
     private void OnPlayerColorChanged(Color odlColor, Color newColor, bool asServer) 
     {
+        // apply the new color to this player
         ApplyColor(newColor);
     }
 
@@ -229,6 +302,121 @@ public class PlayerController : NetworkBehaviour, IDamagable
     {
         OnHealthChanged?.Invoke(previous, current); // notify subscribers about HP change
         Debug.Log($"[Client] Player HP changed from {previous} to: {current}");
+    }
+
+    #endregion
+
+    #region Shooting & ShootingPatterns
+
+    [ServerRpc]
+    private void ChangePatternServerRPC(ShootPattern newPattern)
+    {
+        // called by client to tell server: change shooting pattern
+        // only runs on server, syncs automatically to all clients
+        currentPattern = newPattern;
+        Debug.Log($"[Server] Changed shooting pattern to: {newPattern}");
+    }
+
+    [ServerRpc(RequireOwnership = true)] // only the player controlling this char may shoot
+    private void ShootServerRPC()
+    {
+        Debug.Log("[Server] ShootServerRPC called!");
+        // safety check: only run on server
+        if (!IsServerInitialized) return;
+
+        Debug.Log($"[Server] Shooting with pattern: {currentPattern}");
+
+        // execute the right shooting pattern based on currentPattern
+        switch (currentPattern)
+        {
+            case ShootPattern.Straight:
+                ShootStraight();
+                break;
+            case ShootPattern.Spread:
+                if (Time.time >= lastSpreadTime + spreadCooldown)
+                {
+                    ShootSpread();
+                    lastSpreadTime = Time.time;
+                }
+                break;
+            case ShootPattern.Spiral:
+                if (Time.time >= lastSpiralTime + spiralCooldown)
+                {
+                    StartCoroutine(ShootSpiral());
+                    lastSpiralTime = Time.time;
+                }
+                break;
+            case ShootPattern.Wave:
+                if (Time.time >= lastWaveTime + waveCooldown)
+                {
+                    ShootWave();
+                    lastWaveTime = Time.time;
+                }
+                break;
+        }
+    }
+
+    // shoot one bullet straight ahead from firePoint
+    private void ShootStraight()
+    {
+        SpawnBullet(firePoint.position, firePoint.rotation);
+    }
+
+    private void ShootSpread()
+    {
+        // middle
+        SpawnBullet(firePoint.position, firePoint.rotation);
+
+        // left (rotated left by spreadAngle)
+        Quaternion leftRotation = firePoint.rotation * Quaternion.Euler(0, -spreadAngle, 0);
+        SpawnBullet(firePoint.position, leftRotation);
+
+        // right (rotated right by spreadAngle)
+        Quaternion rightRotation = firePoint.rotation * Quaternion.Euler(0, spreadAngle, 0);
+        SpawnBullet(firePoint.position, rightRotation);
+    }
+
+    private IEnumerator ShootSpiral()
+    {
+        for(int i = 0; i < spiralBulletCount; i++)
+        {
+            float angle = i * (360f / spiralBulletCount);
+            float spiralOffset = i * spiralTightenSpeed; // gets tighter
+            Quaternion rot = firePoint.rotation * Quaternion.Euler(0, angle + spiralOffset, 0);
+            SpawnBullet(firePoint.position, rot);
+
+            yield return new WaitForSeconds(0.05f);
+        }
+    }
+
+    private void ShootWave()
+    {
+        // 5 bullets in sine wave pattern
+        for(int i = 0; i < waveBulletCount; i++)
+        {
+            float waveOffset = Mathf.Sin(i * waveFrequenzy) * waveAmplitude;
+            Quaternion rot = firePoint.rotation * Quaternion.Euler(0, waveOffset, 0);
+            SpawnBullet(firePoint.position, rot);
+        }
+    }
+
+    private void SpawnBullet(Vector3 position, Quaternion rotation)
+    {
+        // get bullet from object pool
+        NetworkObject bulletPrefab = NewObjectPoolManager.Instance.getObject(PoolObjectType.Bullet);
+
+        // instantiate
+        NetworkObject bulletNetObj = Instantiate(bulletPrefab, position, rotation);
+
+        // spawn as network object 
+        Spawn(bulletNetObj.gameObject);
+
+        // konfig bullet
+        Bullet bullet = bulletNetObj.GetComponent<Bullet>();
+        if(bullet != null)
+        {
+            bullet.ShootBullet(bulletDamage, bulletSpeed, bulletLifeTime, ShooterType.Player);
+        }
     }
 
     #endregion

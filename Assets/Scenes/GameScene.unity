@@ -1309,14 +1309,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1103054617333583936, guid: 06e85234fb5849b47985446b1dc86af6, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1243057757500472684, guid: 06e85234fb5849b47985446b1dc86af6, type: 3}
       propertyPath: SceneId
-      value: 3086482431
+      value: 3891772925
       objectReference: {fileID: 0}
     - target: {fileID: 1243057757500472684, guid: 06e85234fb5849b47985446b1dc86af6, type: 3}
-      propertyPath: WasActiveDuringEdit
+      propertyPath: WasActiveDuringEdit_Set1
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6325050639932891261, guid: 06e85234fb5849b47985446b1dc86af6, type: 3}
@@ -1359,22 +1359,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6488348057563329279, guid: 06e85234fb5849b47985446b1dc86af6, type: 3}
-      propertyPath: spawnRadius
-      value: 40
-      objectReference: {fileID: 0}
-    - target: {fileID: 6488348057563329279, guid: 06e85234fb5849b47985446b1dc86af6, type: 3}
-      propertyPath: spawnInterval
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 6488348057563329279, guid: 06e85234fb5849b47985446b1dc86af6, type: 3}
-      propertyPath: minSpawnRadius
-      value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 6488348057563329279, guid: 06e85234fb5849b47985446b1dc86af6, type: 3}
-      propertyPath: enemyBossPrefab
-      value: 
-      objectReference: {fileID: 2970889875794532424, guid: d50813d2b92e9444d895a65460a30697, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

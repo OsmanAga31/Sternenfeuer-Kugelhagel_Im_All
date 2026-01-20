@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 4399708383931729570}
   m_Layer: 0
   m_Name: Enemy1
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -53,14 +53,8 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 7944819583751345781}
   _networkObjectCache: {fileID: 7944819583751345781}
   bulletPrefab: {fileID: 9105152008401707231, guid: 7b3c2635f570805418a2938f26035e70, type: 3}
-  shootDelay: 2
-  speedRange: 6
-  bulletLifeTime: 10
-  damage: 10
-  isBoss: 0
-  bossSpeedMultiplier: 0.5
-  bossHealthMultiplier: 10
-  bossScaleMultiplier: 3
+  shootDelay: 1
+  speedRange: 4
 --- !u!114 &7944819583751345781
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -92,7 +86,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: -8584327024217246636
+  _initializedTimestamp: -8584327057210201657
   NetworkObserver: {fileID: 0}
   _enablePrediction: 0
   _predictionType: 0
@@ -131,7 +125,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3

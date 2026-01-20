@@ -144,7 +144,7 @@ public class Enemy1 : NetworkBehaviour, IDamagable
 
             Spawn(poolBullet);
 
-            poolBullet.gameObject.GetComponent<Bullet>().ShootBullet(damage, speed + 2f, bulletLifeTime);
+            poolBullet.gameObject.GetComponent<Bullet>().ShootBullet(damage, speed + 2f, bulletLifeTime, ShooterType.Enemy);
 
         }
     }

@@ -18,7 +18,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6325050639932891261
 Transform:
   m_ObjectHideFlags: 0
@@ -50,11 +50,14 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 1243057757500472684}
   _networkObjectCache: {fileID: 1243057757500472684}
   enemyPrefab: {fileID: 2970889875794532424, guid: f7448500b5ce81b4684995b397f91da5, type: 3}
+  enemyBossPrefab: {fileID: 2970889875794532424, guid: d50813d2b92e9444d895a65460a30697, type: 3}
   minPlayersToStart: 1
-  spawnInterval: 3
-  minSpawnRadius: 25
-  spawnRadius: 30
+  spawnInterval: 4
+  minSpawnRadius: 30
+  spawnRadius: 40
   spawnCountEnemies: 10
+  raidInterval: 60
+  raidEnemyCount: 5
 --- !u!114 &1243057757500472684
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -86,7 +89,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: -8584327083958928421
+  _initializedTimestamp: -8584326890460021809
   NetworkObserver: {fileID: 0}
   _enablePrediction: 0
   _predictionType: 0
@@ -128,4 +131,5 @@ MonoBehaviour:
   ObjectsToSpawn:
   - {fileID: 9105152008401707231, guid: 7b3c2635f570805418a2938f26035e70, type: 3}
   - {fileID: 2970889875794532424, guid: f7448500b5ce81b4684995b397f91da5, type: 3}
-  prewarmAmount: f401000032000000
+  - {fileID: 2970889875794532424, guid: d50813d2b92e9444d895a65460a30697, type: 3}
+  prewarmAmount: f40100003200000005000000

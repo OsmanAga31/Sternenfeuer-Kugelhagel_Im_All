@@ -126,7 +126,7 @@ GameObject:
   - component: {fileID: 6855285622330708168}
   m_Layer: 0
   m_Name: BossEnemy1
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -202,7 +202,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: -8584327024217246636
+  _initializedTimestamp: -8584326890040762242
   NetworkObserver: {fileID: 0}
   _enablePrediction: 0
   _predictionType: 0

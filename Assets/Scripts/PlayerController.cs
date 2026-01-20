@@ -18,7 +18,16 @@ public class PlayerController : NetworkBehaviour, IDamagable
     private readonly SyncVar<int> playerHP = new SyncVar<int>(100); // health points of the player
     public int CurrentHP => playerHP.Value;
     public int MaxHP => maxHP;
-    public System.Action<int, int> OnHealthChanged; 
+    public System.Action<int, int> OnHealthChanged;
+
+    [Header("Shooting")]
+    [SerializeField] private int bulletDamage = 10;
+    [SerializeField] private float bulletSpeed = 20f;
+    [SerializeField] private float bulletLifeTime = 3f;
+    [SerializeField] private float fireRate = 0.2f; // seconds between shots
+    [SerializeField] private Transform firePoint; // spawn point for bullet
+
+    private float lastFireTime;
 
     // available colors for players
     private static readonly Color[] availableColors = new Color[]
@@ -101,6 +110,13 @@ public class PlayerController : NetworkBehaviour, IDamagable
             // send mouse position to server for rotation
             Vector3 mouseWorldPos = GetMouseWorldPosition();
             RotateServerRPC(mouseWorldPos);
+        }
+
+        // shooting input
+        if (inputActions.Player.Shoot.IsPressed() && Time.time >= lastFireTime + fireRate)
+        {
+            lastFireTime = Time.time;
+            ShootServerRPC();
         }
     }
 
@@ -229,6 +245,30 @@ public class PlayerController : NetworkBehaviour, IDamagable
     {
         OnHealthChanged?.Invoke(previous, current); // notify subscribers about HP change
         Debug.Log($"[Client] Player HP changed from {previous} to: {current}");
+    }
+
+    #endregion
+
+    #region Shooting
+
+    [ServerRpc]
+    private void ShootServerRPC()
+    {
+        if (!IsServerInitialized) return;
+
+        // get bullet from object pool
+        NetworkObject bulletPrefab = NewObjectPoolManager.Instance.getObject(PoolObjectType.Bullet);
+
+        // spawn bullet (fishnet automatically uses object pool)
+        NetworkObject bulletNetObj = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+        Spawn(bulletNetObj.gameObject);
+
+        // konfig bullet
+        Bullet bullet = bulletNetObj.GetComponent<Bullet>();
+        if (bullet != null)
+        {
+            bullet.ShootBullet(bulletDamage, bulletSpeed, bulletLifeTime, ShooterType.Player);
+        }
     }
 
     #endregion

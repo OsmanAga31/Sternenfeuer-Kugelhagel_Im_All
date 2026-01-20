@@ -33,7 +33,7 @@ public class EnemySpawner : NetworkBehaviour
     [Server]
     private void SpawnEnemy()
     {
-        Vector3 spawnPosition = new Vector3(Random.Range(-spawnRadius, spawnRadius), 0.5f, Random.Range(-spawnRadius, spawnRadius));
+        Vector3 spawnPosition = new Vector3(Random.Range(-spawnRadius, spawnRadius), 0f, Random.Range(-spawnRadius, spawnRadius));
 
         NetworkObject poolEnemy = NetworkManager.GetPooledInstantiated(NewObjectPoolManager.Instance.getObject(PoolObjectType.Enemy1), true);
 

@@ -3,8 +3,6 @@ using FishNet.Object;
 using System.Collections;
 using System;
 using FishNet.Object.Synchronizing;
-using System.Runtime.CompilerServices;
-using FishNet;
 
 public class Enemy1 : NetworkBehaviour, IDamagable
 {
@@ -13,7 +11,6 @@ public class Enemy1 : NetworkBehaviour, IDamagable
     [SerializeField, Min(2)] private float speedRange;
 
     private Coroutine shooter;
-    private string targetPoolName = "Bullets";
     private int speed;
     private bool isSubscribedToOnTick_GetPlayers = false;
     private bool isSubscribedToOnTick_MoveTowardsPlayer = false;
@@ -122,8 +119,12 @@ public class Enemy1 : NetworkBehaviour, IDamagable
 
             Spawn(poolBullet);
 
-            poolBullet.gameObject.GetComponent<Bullet>().ShootBullet(5, speed + 2f, 5f);
-
+            // pass shooter type enemy to ensure its bullets only hit player 
+            Bullet bullet = poolBullet.GetComponent<Bullet>();
+            if (bullet != null)
+            {
+                bullet.ShootBullet(5, speed + 2f, 5f, ShooterType.Enemy);
+            }
         }
     }
 

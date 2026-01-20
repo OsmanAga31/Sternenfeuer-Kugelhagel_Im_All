@@ -1307,30 +1307,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Managers
       objectReference: {fileID: 0}
+    - target: {fileID: 1103054617333583936, guid: 06e85234fb5849b47985446b1dc86af6, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1243057757500472684, guid: 06e85234fb5849b47985446b1dc86af6, type: 3}
       propertyPath: SceneId
-      value: 4278173439
+      value: 3086482431
       objectReference: {fileID: 0}
     - target: {fileID: 1243057757500472684, guid: 06e85234fb5849b47985446b1dc86af6, type: 3}
       propertyPath: WasActiveDuringEdit
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 5294962965244432468, guid: 06e85234fb5849b47985446b1dc86af6, type: 3}
-      propertyPath: prewarmAmount.Array.size
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 5294962965244432468, guid: 06e85234fb5849b47985446b1dc86af6, type: 3}
-      propertyPath: ObjectsToSpawn.Array.size
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 5294962965244432468, guid: 06e85234fb5849b47985446b1dc86af6, type: 3}
-      propertyPath: 'prewarmAmount.Array.data[2]'
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5294962965244432468, guid: 06e85234fb5849b47985446b1dc86af6, type: 3}
-      propertyPath: 'ObjectsToSpawn.Array.data[2]'
-      value: 
-      objectReference: {fileID: 2970889875794532424, guid: d50813d2b92e9444d895a65460a30697, type: 3}
     - target: {fileID: 6325050639932891261, guid: 06e85234fb5849b47985446b1dc86af6, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1374,10 +1362,6 @@ PrefabInstance:
     - target: {fileID: 6488348057563329279, guid: 06e85234fb5849b47985446b1dc86af6, type: 3}
       propertyPath: spawnRadius
       value: 40
-      objectReference: {fileID: 0}
-    - target: {fileID: 6488348057563329279, guid: 06e85234fb5849b47985446b1dc86af6, type: 3}
-      propertyPath: raidInterval
-      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 6488348057563329279, guid: 06e85234fb5849b47985446b1dc86af6, type: 3}
       propertyPath: spawnInterval

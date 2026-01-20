@@ -1315,6 +1315,22 @@ PrefabInstance:
       propertyPath: WasActiveDuringEdit
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5294962965244432468, guid: 06e85234fb5849b47985446b1dc86af6, type: 3}
+      propertyPath: prewarmAmount.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5294962965244432468, guid: 06e85234fb5849b47985446b1dc86af6, type: 3}
+      propertyPath: ObjectsToSpawn.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5294962965244432468, guid: 06e85234fb5849b47985446b1dc86af6, type: 3}
+      propertyPath: 'prewarmAmount.Array.data[2]'
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5294962965244432468, guid: 06e85234fb5849b47985446b1dc86af6, type: 3}
+      propertyPath: 'ObjectsToSpawn.Array.data[2]'
+      value: 
+      objectReference: {fileID: 2970889875794532424, guid: d50813d2b92e9444d895a65460a30697, type: 3}
     - target: {fileID: 6325050639932891261, guid: 06e85234fb5849b47985446b1dc86af6, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1357,12 +1373,20 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6488348057563329279, guid: 06e85234fb5849b47985446b1dc86af6, type: 3}
       propertyPath: spawnRadius
-      value: 30
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 6488348057563329279, guid: 06e85234fb5849b47985446b1dc86af6, type: 3}
+      propertyPath: raidInterval
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 6488348057563329279, guid: 06e85234fb5849b47985446b1dc86af6, type: 3}
       propertyPath: minSpawnRadius
-      value: 25
+      value: 30
       objectReference: {fileID: 0}
+    - target: {fileID: 6488348057563329279, guid: 06e85234fb5849b47985446b1dc86af6, type: 3}
+      propertyPath: enemyBossPrefab
+      value: 
+      objectReference: {fileID: 2970889875794532424, guid: d50813d2b92e9444d895a65460a30697, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

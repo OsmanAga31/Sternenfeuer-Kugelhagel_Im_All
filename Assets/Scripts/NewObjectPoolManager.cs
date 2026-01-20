@@ -40,5 +40,6 @@ public class NewObjectPoolManager : NetworkBehaviour
 public enum PoolObjectType
 {
     Bullet,
-    Enemy1
+    Enemy1,
+    EnemyBoss1
 }

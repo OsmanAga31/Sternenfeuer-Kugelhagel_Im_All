@@ -1,29 +1,38 @@
-using UnityEngine;
-using FishNet.Object;
-using System.Collections;
-using System;
-using FishNet.Object.Synchronizing;
-using System.Runtime.CompilerServices;
 using FishNet;
+using FishNet.Object;
+using FishNet.Object.Synchronizing;
+using Sirenix.OdinInspector;
+using System;
+using System.Collections;
+using System.Runtime.CompilerServices;
+using UnityEngine;
 
 public class Enemy1 : NetworkBehaviour, IDamagable
 {
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private float shootDelay;
     [SerializeField, Min(2)] private float speedRange;
+    [SerializeField] private float bulletLifeTime = 10f;
 
     private Coroutine shooter;
     private string targetPoolName = "Bullets";
-    private int speed;
+    private float speed;
     private bool isSubscribedToOnTick_GetPlayers = false;
     private bool isSubscribedToOnTick_MoveTowardsPlayer = false;
 
     private GameObject playerLocation;
 
-    [Header("Enemy1 Stats")]
-    private const int maxHealth = 100;
-    [SerializeField] private readonly SyncVar<int> health = new SyncVar<int>(100);
+    [Header("Enemy Stats")]
+    [SerializeField] private int damage = 10;
+    [SerializeField] private const int maxHealth = 100;
+    [SerializeField] private readonly SyncVar<int> health = new();
 
+    [Header("Boss Settings")]
+    [SerializeField] private bool isBoss;
+
+    [SerializeField] private float bossSpeedMultiplier = 0.5f;
+    [SerializeField] private float bossHealthMultiplier = 10f;
+    [SerializeField] private float bossScaleMultiplier = 3f;
 
     public override void OnStartServer()
     {
@@ -34,14 +43,25 @@ public class Enemy1 : NetworkBehaviour, IDamagable
             TimeManager.OnTick += GetClosestPlayers;
             isSubscribedToOnTick_GetPlayers = true;
         }
-        speed = UnityEngine.Random.Range(2, (int)speedRange);
+        speed = UnityEngine.Random.Range(2, speedRange);
+
+        if (isBoss)
+        {
+            speed = (speed * bossSpeedMultiplier);
+            health.Value = (int)(maxHealth * bossHealthMultiplier);
+            transform.localScale = transform.localScale * bossScaleMultiplier;
+        }
+        else
+        {
+            health.Value = maxHealth;
+        }
 
         Debug.Log("Server Initialized - Enemy1");
     }
 
     private void OnEnable()
     {
-        speed = UnityEngine.Random.Range(2, (int)speedRange);
+        speed = UnityEngine.Random.Range(2, speedRange);
 
     }
 
@@ -119,10 +139,12 @@ public class Enemy1 : NetworkBehaviour, IDamagable
 
             poolBullet.transform.position = spawnPosition;
             poolBullet.transform.rotation = transform.rotation;
+            if (isBoss)
+                poolBullet.transform.localScale *= bossScaleMultiplier;
 
             Spawn(poolBullet);
 
-            poolBullet.gameObject.GetComponent<Bullet>().ShootBullet(5, speed + 2f, 5f);
+            poolBullet.gameObject.GetComponent<Bullet>().ShootBullet(damage, speed + 2f, bulletLifeTime);
 
         }
     }
@@ -156,7 +178,7 @@ public class Enemy1 : NetworkBehaviour, IDamagable
     public void Damage(int dmg)
     {
         health.Value -= dmg;
-        Debug.Log("Enemy1 Health: " + health.Value);
+        //Debug.Log("Enemy1 Health: " + health.Value);
         if (health.Value <= 0)
         {
             Die();
@@ -166,7 +188,7 @@ public class Enemy1 : NetworkBehaviour, IDamagable
     private void OnHealthChanged(int previous, int current, bool asServer)
     {
         // This method is called on both server and clients when health changes.
-        Debug.Log($"Enemy1 Health changed from {previous} to {current}. Health: {current}/{maxHealth} which is perc: {(current * 100) / maxHealth}%");
+        Debug.Log($"The Enemy \"{gameObject.name}\" Health changed from {previous} to {current}. Health: {current}/{maxHealth} which is perc: {(current * 100) / maxHealth}%");
     }
 
     #endregion

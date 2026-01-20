@@ -52,7 +52,9 @@ MonoBehaviour:
   enemyPrefab: {fileID: 2970889875794532424, guid: f7448500b5ce81b4684995b397f91da5, type: 3}
   minPlayersToStart: 1
   spawnInterval: 3
-  spawnRadius: 15
+  minSpawnRadius: 25
+  spawnRadius: 30
+  spawnCountEnemies: 10
 --- !u!114 &1243057757500472684
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -73,7 +75,7 @@ MonoBehaviour:
   <PredictedOwner>k__BackingField: {fileID: 0}
   NetworkBehaviours:
   - {fileID: 6488348057563329279}
-  - {fileID: 0}
+  - {fileID: 5294962965244432468}
   InitializedParentNetworkBehaviour: {fileID: 0}
   InitializedNestedNetworkObjects: []
   RuntimeParentNetworkBehaviour: {fileID: 0}
@@ -84,7 +86,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: -8584331229512465523
+  _initializedTimestamp: -8584327083958928421
   NetworkObserver: {fileID: 0}
   _enablePrediction: 0
   _predictionType: 0
@@ -120,9 +122,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1df2c1634dd4c44429f01ce7237b10e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 255
+  _componentIndexCache: 1
   _addedNetworkObject: {fileID: 1243057757500472684}
-  _networkObjectCache: {fileID: 0}
+  _networkObjectCache: {fileID: 1243057757500472684}
   ObjectsToSpawn:
   - {fileID: 9105152008401707231, guid: 7b3c2635f570805418a2938f26035e70, type: 3}
   - {fileID: 2970889875794532424, guid: f7448500b5ce81b4684995b397f91da5, type: 3}

@@ -53,8 +53,14 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 7944819583751345781}
   _networkObjectCache: {fileID: 7944819583751345781}
   bulletPrefab: {fileID: 9105152008401707231, guid: 7b3c2635f570805418a2938f26035e70, type: 3}
-  shootDelay: 1
-  speedRange: 4
+  shootDelay: 2
+  speedRange: 6
+  bulletLifeTime: 10
+  damage: 10
+  isBoss: 0
+  bossSpeedMultiplier: 0.5
+  bossHealthMultiplier: 10
+  bossScaleMultiplier: 3
 --- !u!114 &7944819583751345781
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -86,7 +92,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: -8584327057210201657
+  _initializedTimestamp: -8584326852688118898
   NetworkObserver: {fileID: 0}
   _enablePrediction: 0
   _predictionType: 0

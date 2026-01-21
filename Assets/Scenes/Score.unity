@@ -618,6 +618,39 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 1
+--- !u!1 &606458652 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1103054617333583936, guid: 06e85234fb5849b47985446b1dc86af6, type: 3}
+  m_PrefabInstance: {fileID: 2137633722}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &606458654 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1243057757500472684, guid: 06e85234fb5849b47985446b1dc86af6, type: 3}
+  m_PrefabInstance: {fileID: 2137633722}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 606458652}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26b716c41e9b56b4baafaf13a523ba2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &606458657
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 606458652}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31d98c31d1d7fac45ad9b2cc0e1d3e00, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 255
+  _addedNetworkObject: {fileID: 606458654}
+  _networkObjectCache: {fileID: 0}
+  smallEnemyPoints: 100
+  largeEnemyPoints: 150
 --- !u!1 &628608123
 GameObject:
   m_ObjectHideFlags: 0
@@ -1330,6 +1363,14 @@ PrefabInstance:
       value: 3891772925
       objectReference: {fileID: 0}
     - target: {fileID: 1243057757500472684, guid: 06e85234fb5849b47985446b1dc86af6, type: 3}
+      propertyPath: _isSpawnable
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1243057757500472684, guid: 06e85234fb5849b47985446b1dc86af6, type: 3}
+      propertyPath: WasActiveDuringEdit
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1243057757500472684, guid: 06e85234fb5849b47985446b1dc86af6, type: 3}
       propertyPath: WasActiveDuringEdit_Set1
       value: 1
       objectReference: {fileID: 0}
@@ -1376,7 +1417,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1103054617333583936, guid: 06e85234fb5849b47985446b1dc86af6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 606458657}
   m_SourcePrefab: {fileID: 100100000, guid: 06e85234fb5849b47985446b1dc86af6, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

@@ -119,8 +119,27 @@ public class PlayerController : NetworkBehaviour, IDamagable
 
         // assign color on server
         AssignPlayerColor();
+
+        // register player in ScoreManager
+        if(ScoreManager.Instance != null)
+        {
+            ScoreManager.Instance.RegisterPlayer(OwnerId);
+        }
+        else
+        {
+            //retry if ScoreManager not ready yet
+            Invoke(nameof(RegisterInScoreManager), 0.2f);
+        }
     }
 
+    [Server]
+    private void RegisterInScoreManager()
+    {
+        if (ScoreManager.Instance != null)
+        {
+            ScoreManager.Instance.RegisterPlayer(OwnerId);
+        }
+    }
 
     public override void OnStartClient()
     {
@@ -226,7 +245,6 @@ public class PlayerController : NetworkBehaviour, IDamagable
                 ShootServerRPC();
             }
         }
-
     }
 
     private void Update()
@@ -384,9 +402,14 @@ public class PlayerController : NetworkBehaviour, IDamagable
         // check for death
         if (playerHP.Value <= 0)
         {
-            Debug.Log($"[Server] Player has died.");
-            // Handle player death (respawn, game over, etc.)
-            ScoreManager.Instance?.CalculateFinalScore();
+            Debug.Log($"[Server] Player {OwnerId} has died.");
+
+            /// Handle player death (respawn, game over, etc.)
+
+            // mark THIS player as dead in ScoreManager
+            ScoreManager.Instance?.SetPlayerDead(OwnerId);
+            
+            ScoreManager.Instance?.CalculateFinalScore(OwnerId);
         }
     }
 

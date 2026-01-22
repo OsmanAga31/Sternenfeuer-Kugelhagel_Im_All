@@ -425,6 +425,9 @@ public class PlayerController : NetworkBehaviour, IDamagable
             ScoreManager.Instance?.SetPlayerDead(OwnerId);
             
             ScoreManager.Instance?.CalculateFinalScore(OwnerId);
+
+            // save highscore in database
+            ScoreNetworkManager.Instance?.RequestSaveScore(PlayerName, ScoreManager.Instance.GetPlayerScore(OwnerId));
         }
     }
 

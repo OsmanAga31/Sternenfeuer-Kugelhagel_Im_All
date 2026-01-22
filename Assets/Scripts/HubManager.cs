@@ -61,7 +61,13 @@ public class HubManager : NetworkBehaviour
             buttonText.text = "Start Game";
             gameIsRunning = false;
         }
+        ShowHideScoreList.Instance.Toggle(!gameIsRunning);
         ToggleNameField(!gameIsRunning);
+    }
+
+    public string getName()
+    {
+        return nameInputField.text;
     }
 
     [ObserversRpc]

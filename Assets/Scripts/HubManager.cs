@@ -12,10 +12,10 @@ public class HubManager : NetworkBehaviour
     public static HubManager Instance;
 
     [SerializeField] private Button startButton;
+    public TMP_InputField nameInputField;
     private TMP_Text buttonText;
     private bool gameIsRunning = false;
 
-    public UnityEvent<string> OnInputfieldChangeValue;
 
     private void Awake()
     {
@@ -61,6 +61,13 @@ public class HubManager : NetworkBehaviour
             buttonText.text = "Start Game";
             gameIsRunning = false;
         }
+        ToggleNameField(!gameIsRunning);
+    }
+
+    [ObserversRpc]
+    private void ToggleNameField(bool actv)
+    {
+        nameInputField.gameObject.SetActive(actv);
     }
 
 }

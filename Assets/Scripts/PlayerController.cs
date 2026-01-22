@@ -415,7 +415,7 @@ public class PlayerController : NetworkBehaviour, IDamagable
         }
 
         // check for death
-        if (playerHP.Value <= 0)
+        if (playerHP.Value <= 0 && !ScoreManager.Instance.IsPlayerDead(OwnerId))
         {
             Debug.Log($"[Server] Player {OwnerId} has died.");
 

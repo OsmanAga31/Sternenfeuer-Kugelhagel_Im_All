@@ -126,6 +126,13 @@ public class ScoreManager : NetworkBehaviour
         }
     }
 
+    // get player dead status
+    [Server]
+    public bool IsPlayerDead(int playerId)
+    {
+        return playerAliveStatus.TryGetValue(playerId, out bool isAlive) && !isAlive;
+    }
+
     [Server]
     public void CalculateFinalScore(int playerId)
     {

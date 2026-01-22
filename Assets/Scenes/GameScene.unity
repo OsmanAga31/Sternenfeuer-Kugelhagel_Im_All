@@ -2023,6 +2023,14 @@ PrefabInstance:
       propertyPath: WasActiveDuringEdit
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2826094552047879054, guid: 06e85234fb5849b47985446b1dc86af6, type: 3}
+      propertyPath: raidEnemyCount
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2826094552047879054, guid: 06e85234fb5849b47985446b1dc86af6, type: 3}
+      propertyPath: spawnCountEnemies
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 6325050639932891261, guid: 06e85234fb5849b47985446b1dc86af6, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -2107,9 +2115,6 @@ MonoBehaviour:
   _networkObjectCache: {fileID: 0}
   startButton: {fileID: 536663930}
   nameInputField: {fileID: 1460591894}
-  OnInputfieldChangeValue:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &1819564305
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -16,6 +16,7 @@ public class Enemy1 : NetworkBehaviour, IDamagable
 
     private Coroutine shooter;
     private string targetPoolName = "Bullets";
+    private bool isAlive = true;
     private float speed;
     private bool isSubscribedToOnTick_GetPlayers = false;
     private bool isSubscribedToOnTick_MoveTowardsPlayer = false;
@@ -62,6 +63,7 @@ public class Enemy1 : NetworkBehaviour, IDamagable
     private void OnEnable()
     {
         speed = UnityEngine.Random.Range(2, speedRange);
+        isAlive = true;
 
     }
 
@@ -118,16 +120,51 @@ public class Enemy1 : NetworkBehaviour, IDamagable
     }
 
     // nur wenn Enemy wirklich stirbt und nicht bei OnStopServer
-    public void Die()
+    private void Die(NetworkObject shooter)
     {
+        //TimeManager.OnTick -= MoveOnTick;
+        //if (shooter != null)
+        //    StopCoroutine(shooter);
+        //Despawn(DespawnType.Pool);
+        //Debug.Log("Enemy1 Destroyed");
+        //int points = ScoreManager.Instance.GetEnemyPoints(isBoss);
+        //ScoreManager.Instance.AddEnemyPointsServer(points);
+
+
+        //TimeManager.OnTick -= MoveOnTick;
+        //if (shooter != null) StopCoroutine(shooter);
+
+        //int points = isBoss ? 300 : 100;
+        //if (ScoreManager.Instance != null)
+        //{
+        //    ScoreManager.Instance.AddEnemyPointsServer(points);
+        //    Debug.Log($"Enemy besiegt! +{points} Punkte (Score: {ScoreManager.Instance.BaseScore})");
+        //}
+        //else
+        //{
+        //    Debug.LogWarning("ScoreManager nicht bereit oder nicht Server!");
+        //}
+
+        //isAlive = false;
+        //Despawn(DespawnType.Pool);
+
         TimeManager.OnTick -= MoveOnTick;
         if (shooter != null)
-            StopCoroutine(shooter);
+        {
+            if (shooter.OwnerId != int.MaxValue)  // Gültiger Owner?
+            {
+                int points = isBoss ? 300 : 100;
+                ScoreManager.Instance.AddPointsToPlayerServer(shooter.OwnerId, points);
+                Debug.Log($"Enemy besiegt von Player {shooter.OwnerId}! {points} Punkte");
+            }
+        }
+        isAlive = false;
         Despawn(DespawnType.Pool);
-        Debug.Log("Enemy1 Despawned");
     }
 
-    [Server]
+
+
+[Server]
     private IEnumerator Shoot()
     {
         while (true) { 
@@ -144,8 +181,14 @@ public class Enemy1 : NetworkBehaviour, IDamagable
 
             Spawn(poolBullet);
 
-            poolBullet.gameObject.GetComponent<Bullet>().ShootBullet(damage, speed + 2f, bulletLifeTime, ShooterType.Enemy);
-
+            poolBullet.gameObject.GetComponent<Bullet>().ShootBullet(
+                damage,
+                speed +2f,
+                bulletLifeTime,
+                ShooterType.Enemy,
+                //null
+                this.NetworkObject
+                );
         }
     }
 
@@ -169,14 +212,15 @@ public class Enemy1 : NetworkBehaviour, IDamagable
 
     #region Health / IDamagable Implementation
 
-    [Server]
-    public void Damage(int dmg)
+    public void Damage(int dmg, NetworkObject shooter = null)
     {
+        if (!IsServerInitialized || !isAlive)
+            return;
         health.Value -= dmg;
         //Debug.Log("Enemy1 Health: " + health.Value);
         if (health.Value <= 0)
         {
-            Die();
+            Die(shooter);
         }
     }
 

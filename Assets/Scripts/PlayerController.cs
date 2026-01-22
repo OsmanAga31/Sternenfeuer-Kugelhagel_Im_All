@@ -1,15 +1,12 @@
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using System.Collections;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public enum ShootPattern
 {
     Straight,
     Spread,
-    Circular,
     Spiral,
     Wave
 }
@@ -18,10 +15,13 @@ public class PlayerController : NetworkBehaviour, IDamagable
 {
     [Header("UI")]
     [SerializeField] private NameDisplay nameDisplay; // reference to the NameDisplay script
-    //private TMP_InputField nameInputField;
 
-    [Header("SyncVars")]
+    
     private readonly SyncVar<string> playerName = new SyncVar<string>(); // name of the player
+    public string PlayerName => playerName.Value; // public getter for SyncVar
+    public int PlayerOwnerId => OwnerId;
+
+
     private readonly SyncVar<Color> playerColor = new SyncVar<Color>(); // color of the player
 
     [Header("Player Stats")]
@@ -82,87 +82,148 @@ public class PlayerController : NetworkBehaviour, IDamagable
     private Camera mainCamera;
     private MeshRenderer meshRenderer;
 
+    private void Awake()
+    {
+        meshRenderer = GetComponentInChildren<MeshRenderer>();
+    }
+
     private void Start() 
     { 
         inputActions = new InputSystem_Actions();
         inputActions.Player.Enable();
-        TimeManager.OnTick += OnServerTick;
+        //TimeManager.OnTick += OnServerTick;
         mainCamera = Camera.main;
-        meshRenderer = GetComponentInChildren<MeshRenderer>();
 
-        // Assign a color to the player (server-side)
-        if(IsServerInitialized)
-        {
-            AssignPlayerColor();
-        }
-
-        // react to color changes (for clients)
-        playerColor.OnChange += OnPlayerColorChanged;
-
-        // set initial color, if already existing
-        if(playerColor.Value != Color.clear)
-        {
-            ApplyColor(playerColor.Value);
-        }
-
-        // react to HP changes
-        playerHP.OnChange += OnPlayerHPChanged;
-
-        ///TODO:
-
-        // --------------- Name Handling --------------- 
-        // GameManager or Login system should be implemented to get player names
-        //// set player name 
-        //if (IsOwner)
+        //// Assign a color to the player (server-side)
+        //if(IsServerInitialized)
         //{
-        //   // get name from for example Login or input field
-        //   string username = MyGameManager.LocalUserName; // placeholder for actual name retrieval
-
-        //   // fill SyncVar
-        //   SetPlayerNameServerRPC(username);
-
-        //   // update local UI instantly
-        //   nameDisplay.SetName(username);
+        //    AssignPlayerColor();
         //}
 
-        // react to name changes so other clients see the updated name
-        playerName.OnChange += OnPlayerNameChanged;
+        //// react to color changes (for clients)
+        //playerColor.OnChange += OnPlayerColorChanged;
 
-        
+        //// set initial color, if already existing
+        //if(playerColor.Value != Color.clear)
+        //{
+        //    ApplyColor(playerColor.Value);
+        //}
+
+        //// react to HP changes
+        //playerHP.OnChange += OnPlayerHPChanged;
+    }
+
+    public override void OnStartServer()
+    {
+        base.OnStartServer();
+
+        // assign color on server
+        AssignPlayerColor();
+
+        // register player in ScoreManager
+        if(ScoreManager.Instance != null)
+        {
+            ScoreManager.Instance.RegisterPlayer(OwnerId);
+        }
+        else
+        {
+            //retry if ScoreManager not ready yet
+            Invoke(nameof(RegisterInScoreManager), 0.2f);
+        }
+    }
+
+    [Server]
+    private void RegisterInScoreManager()
+    {
+        if (ScoreManager.Instance != null)
+        {
+            ScoreManager.Instance.RegisterPlayer(OwnerId);
+        }
     }
 
     public override void OnStartClient()
     {
         base.OnStartClient();
-        // when a new client starts, update the name display
-        if (nameDisplay != null)
+
+        TimeManager.OnTick += OnServerTick;
+
+        // react to color changes (for clients)
+        playerColor.OnChange += OnPlayerColorChanged;
+
+        // react to HP changes
+        playerHP.OnChange += OnPlayerHPChanged;
+
+
+        // react to name changes
+        playerName.OnChange += OnPlayerNameChanged;
+
+        // apply initial color if already set (important for clients joining later)
+        if(playerColor.Value != Color.clear)
         {
-            nameDisplay.SetName(playerName.Value);
+            Debug.Log($"[Client] Applaying initial color: {playerColor.Value}");
+            ApplyColor(playerColor.Value);
         }
 
-        if (!IsOwner) return;
+        //// assign a color to the player (server-side)
+        //if (IsServerInitialized)
+        //{
+        //    AssignPlayerColor();
+        //}
 
-        HubManager.Instance.nameInputField = TMP_InputField.FindAnyObjectByType<TMP_InputField>();
-        if (HubManager.Instance.nameInputField != null)
+        //// react to color changes (for clients)
+        //playerColor.OnChange += OnPlayerColorChanged;
+        //if (playerColor.Value != Color.clear)
+        //{
+        //    ApplyColor(playerColor.Value);
+        //}
+
+        //// react to HP changes
+        //playerHP.OnChange += OnPlayerHPChanged;
+
+        // set name only for Owner (after Network-Init)
+        if (IsOwner)
         {
-            HubManager.Instance.nameInputField.onValueChanged.AddListener(UpdateNameUI);
+            string playerName = $"Player{Owner.ClientId}";
+            SetPlayerNameServerRPC(playerName);
+            if (nameDisplay != null)
+                nameDisplay.SetName(playerName);
         }
+    }
+
+    ///TODO:
+
+    // --------------- Name Handling --------------- 
+    // GameManager or Login system should be implemented to get player names
+    //// set player name 
+    //if (IsOwner)
+    //{
+    //   // get name from for example Login or input field
+    //   string username = MyGameManager.LocalUserName; // placeholder for actual name retrieval
+
+    //   // fill SyncVar
+    //   SetPlayerNameServerRPC(username);
+
+    //   // update local UI instantly
+    //   nameDisplay.SetName(username);
+    //}
+
+    // react to name changes so other clients see the updated name
+    // playerName.OnChange += OnPlayerNameChanged;
+
+
+    [ServerRpc(RequireOwnership = true)]
+    private void SetPlayerNameServerRPC(string name)
+    {
+        playerName.Value = name;
+        Debug.Log($"[Server] Set player name: {name}");
     }
 
     private void OnPlayerNameChanged(string oldName, string newName, bool asServer)
     {
-        // update the name display UI
-        if (nameDisplay != null)
-        {
+        Debug.Log($"Name changed: {oldName} -> {newName}");
+        if(nameDisplay != null && !asServer)
             nameDisplay.SetName(newName);
-        }
     }
-
-    [ServerRpc]
-    public void UpdateNameUI(string val)
-    {
-        playerName.Value = val;
-    } 
 
     private void OnServerTick() 
     {
@@ -184,7 +245,6 @@ public class PlayerController : NetworkBehaviour, IDamagable
                 ShootServerRPC();
             }
         }
-
     }
 
     private void Update()
@@ -272,6 +332,7 @@ public class PlayerController : NetworkBehaviour, IDamagable
 
     #region Color Handling
 
+    [Server]
     private void AssignPlayerColor() 
     {
         // assign next available color and put it in the SyncVar
@@ -289,10 +350,15 @@ public class PlayerController : NetworkBehaviour, IDamagable
     }
 
     // called automatically when playerColor SyncVar changes (on ALL clients)
-    private void OnPlayerColorChanged(Color odlColor, Color newColor, bool asServer) 
+    private void OnPlayerColorChanged(Color oldColor, Color newColor, bool asServer) 
     {
-        // apply the new color to this player
-        ApplyColor(newColor);
+        if (!asServer)
+        {
+            Debug.Log($"[{(asServer ? "Server" : "Client")}] OnPlayerColorChanged: {oldColor} -> {newColor}");
+
+            // apply the new color (only on clients, server already applied it)
+            ApplyColor(newColor);
+        }
     }
 
     private void ApplyColor(Color color) 
@@ -317,7 +383,7 @@ public class PlayerController : NetworkBehaviour, IDamagable
 
     [Server]
     // Implement Damage method from IDamagable interface
-    public void Damage(int damageAmount)
+    public void Damage(int damageAmount, NetworkObject shooter = null)
     {
         // only process damage on server
         if (!IsServerInitialized) return;
@@ -327,11 +393,23 @@ public class PlayerController : NetworkBehaviour, IDamagable
         if(playerHP.Value < 0 ) playerHP.Value = 0;
         Debug.Log($"[Server] Player damaged by {damageAmount}, current HP: {playerHP.Value}");
 
+        if(shooter != null && shooter.OwnerId != int.MaxValue)
+        {
+            int points = 10;
+            ScoreManager.Instance?.AddPointsToPlayerServer(shooter.OwnerId, points);
+        }
+
         // check for death
         if (playerHP.Value <= 0)
         {
-            Debug.Log($"[Server] Player has died.");
-            // Handle player death (respawn, game over, etc.)
+            Debug.Log($"[Server] Player {OwnerId} has died.");
+
+            /// Handle player death (respawn, game over, etc.)
+
+            // mark THIS player as dead in ScoreManager
+            ScoreManager.Instance?.SetPlayerDead(OwnerId);
+            
+            ScoreManager.Instance?.CalculateFinalScore(OwnerId);
         }
     }
 
@@ -440,6 +518,8 @@ public class PlayerController : NetworkBehaviour, IDamagable
 
     private void SpawnBullet(Vector3 position, Quaternion rotation)
     {
+        Debug.Log($"[PlayerController] SpawnBullet called - OwnerId: {OwnerId}");
+
         // get bullet from object pool
         NetworkObject bulletPrefab = NewObjectPoolManager.Instance.getObject(PoolObjectType.Bullet);
 
@@ -453,23 +533,42 @@ public class PlayerController : NetworkBehaviour, IDamagable
         Bullet bullet = bulletNetObj.GetComponent<Bullet>();
         if(bullet != null)
         {
-            bullet.ShootBullet(bulletDamage, bulletSpeed, bulletLifeTime, ShooterType.Player);
+            // WICHTIG: "this.NetworkObject" ist die Referenz auf diesen Player!
+            NetworkObject shooterRef = this.NetworkObject;
+
+            Debug.Log($"[PlayerController] Passing shooter to bullet:");
+            Debug.Log($"  - Shooter NetworkObject: {(shooterRef != null ? "EXISTS" : "NULL")}");
+            Debug.Log($"  - Shooter OwnerId: {(shooterRef != null ? shooterRef.OwnerId.ToString() : "N/A")}");
+            Debug.Log($"  - this.OwnerId: {this.OwnerId}");
+
+            bullet.ShootBullet(bulletDamage, bulletSpeed, bulletLifeTime, ShooterType.Player, shooterRef);
+
+            Debug.Log($"[PlayerController] Bullet spawned and configured");
+        }
+        else
+        {
+            Debug.LogError("[PlayerController] Bullet component not found on spawned object!");
         }
     }
+    
 
     #endregion
 
     private void OnDestroy() 
     {
-        if (TimeManager != null)
-        {
+        if (TimeManager != null)        
             TimeManager.OnTick -= OnServerTick;
-        }
+        
 
         // unsubscribe from SyncVar changes
         playerColor.OnChange -= OnPlayerColorChanged;
 
         // unsubscribe from HP changes
         playerHP.OnChange -= OnPlayerHPChanged;
+
+        playerName.OnChange -= OnPlayerNameChanged;
+
+        //inputActions?.Player.Disable();
+        //inputActions?.Disable();
     }
 }

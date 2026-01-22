@@ -1,7 +1,9 @@
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using System.Collections;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public enum ShootPattern
 {
@@ -123,8 +125,41 @@ public class PlayerController : NetworkBehaviour, IDamagable
         //}
 
         // react to name changes so other clients see the updated name
-        // playerName.OnChange += OnPlayerNameChanged;
+        playerName.OnChange += OnPlayerNameChanged;
+
+        
     }
+
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
+        // when a new client starts, update the name display
+        if (nameDisplay != null)
+        {
+            nameDisplay.SetName(playerName.Value);
+        }
+
+        if (!IsOwner) return;
+        HubManager.Instance.OnInputfieldChangeValue.AddListener(UpdateNameUI);
+    }
+
+    private void OnPlayerNameChanged(string oldName, string newName, bool asServer)
+    {
+        // update the name display UI
+        if (nameDisplay != null)
+        {
+            nameDisplay.SetName(newName);
+        }
+    }
+
+    [ServerRpc]
+    public void UpdateNameUI(string val)
+    {
+        if (!IsOwner)
+            return;
+        
+        playerName.Value = val;
+    } 
 
     private void OnServerTick() 
     {

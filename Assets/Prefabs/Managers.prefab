@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6325050639932891261}
+  - component: {fileID: 2826094552047879054}
   - component: {fileID: 1243057757500472684}
   - component: {fileID: 5294962965244432468}
   m_Layer: 0
@@ -33,6 +34,30 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2826094552047879054
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1103054617333583936}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b7643d0fff0b9646b7fdea181170f41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 0
+  _addedNetworkObject: {fileID: 1243057757500472684}
+  _networkObjectCache: {fileID: 1243057757500472684}
+  enemyPrefab: {fileID: 2970889875794532424, guid: f7448500b5ce81b4684995b397f91da5, type: 3}
+  enemyBossPrefab: {fileID: 2970889875794532424, guid: d50813d2b92e9444d895a65460a30697, type: 3}
+  minPlayersToStart: 1
+  spawnInterval: 4
+  minSpawnRadius: 30
+  spawnRadius: 40
+  spawnCountEnemies: 10
+  raidInterval: 60
+  raidEnemyCount: 5
 --- !u!114 &1243057757500472684
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -52,7 +77,7 @@ MonoBehaviour:
   <PredictedSpawn>k__BackingField: {fileID: 0}
   <PredictedOwner>k__BackingField: {fileID: 0}
   NetworkBehaviours:
-  - {fileID: 0}
+  - {fileID: 2826094552047879054}
   - {fileID: 5294962965244432468}
   InitializedParentNetworkBehaviour: {fileID: 0}
   InitializedNestedNetworkObjects: []
@@ -64,7 +89,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: -8584326858274944311
+  _initializedTimestamp: -8584326089140495648
   NetworkObserver: {fileID: 0}
   _enablePrediction: 0
   _predictionType: 0

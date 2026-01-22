@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 5944546926357052930}
   m_Layer: 0
   m_Name: BulletPrefab
-  m_TagString: Untagged
+  m_TagString: Bullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -157,7 +157,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 1
-  _initializedTimestamp: -8584331336186307326
+  _initializedTimestamp: -8584326066091418179
   NetworkObserver: {fileID: 0}
   _enablePrediction: 0
   _predictionType: 0

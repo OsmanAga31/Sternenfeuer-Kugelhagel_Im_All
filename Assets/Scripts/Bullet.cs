@@ -92,7 +92,7 @@ public class Bullet : NetworkBehaviour
     }
 
     [Server]
-    private void DeactivateBullet()
+    public void DeactivateBullet()
     {
         if (bul != null)
         {

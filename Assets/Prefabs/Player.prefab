@@ -626,7 +626,7 @@ MonoBehaviour:
   _componentIndexCache: 1
   _addedNetworkObject: {fileID: 2799674862731037817}
   _networkObjectCache: {fileID: 2799674862731037817}
-  nameDisplay: {fileID: 0}
+  nameDisplay: {fileID: 1309817324192141174}
   bulletDamage: 100
   bulletSpeed: 20
   bulletLifeTime: 3
@@ -634,11 +634,14 @@ MonoBehaviour:
   firePoint: {fileID: 3573563074483418803}
   currentPattern: 0
   spreadAngle: 30
+  spreadCooldown: 0.8
   spiralBulletCount: 12
   spiralTightenSpeed: 5
+  spiralCooldown: 1.5
   waveBulletCount: 12
   waveAmplitude: 20
   waveFrequenzy: 0.7
+  waveCooldown: 1.2
   playerSpeed: 10
   playerTransform: {fileID: 8682092917843314588}
   goToRotate: {fileID: 4156722877576214565}

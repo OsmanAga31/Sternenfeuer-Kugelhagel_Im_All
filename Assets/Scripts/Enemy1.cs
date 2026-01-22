@@ -118,13 +118,13 @@ public class Enemy1 : NetworkBehaviour, IDamagable
     }
 
     // nur wenn Enemy wirklich stirbt und nicht bei OnStopServer
-    private void Die()
+    public void Die()
     {
         TimeManager.OnTick -= MoveOnTick;
         if (shooter != null)
             StopCoroutine(shooter);
         Despawn(DespawnType.Pool);
-        Debug.Log("Enemy1 Destroyed");
+        Debug.Log("Enemy1 Despawned");
     }
 
     [Server]

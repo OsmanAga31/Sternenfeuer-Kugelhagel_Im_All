@@ -1,9 +1,14 @@
 using UnityEngine;
 using FishNet.Object;
 using System.Collections;
+using NUnit.Framework;
+using System.Collections.Generic;
+using System.Xml.Serialization;
 
 public class EnemySpawner : NetworkBehaviour
 {
+    public static EnemySpawner Instance;
+
     [Header("Prefabs")]
     [SerializeField] private GameObject enemyPrefab;
     [SerializeField] private GameObject enemyBossPrefab;
@@ -24,12 +29,52 @@ public class EnemySpawner : NetworkBehaviour
     private float spawnX;
     private float spawnZ;
 
+    List<Coroutine> routines = new List<Coroutine>();
+
     public override void OnStartServer()
     {
         base.OnStartServer();
+        if (IsServerInitialized && Instance == null)
+            Instance = this;
+    }
+
+    [Server]
+    public void StartGame()
+    {
         if (minSpawnRadius > spawnRadius)
             spawnRadius = minSpawnRadius;
-        StartCoroutine(CheckForPlayers());
+        routines.Add(StartCoroutine(CheckForPlayers()));
+    }
+
+    [Server]
+    public void StopGame()
+    {
+        foreach (Coroutine routine in routines)
+        {
+            if (routine != null)
+                StopCoroutine(routine);
+        }
+        routines.Clear();
+
+        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        foreach (GameObject enemy in enemies)
+        {
+            Enemy1 AnnaMay = enemy.GetComponent<Enemy1>();
+            if (AnnaMay != null)
+            {
+                AnnaMay.Die();
+            }
+        }
+
+        GameObject[] bullettos = GameObject.FindGameObjectsWithTag("Bullet");
+        foreach (GameObject bulleto in bullettos)
+        {
+            Bullet bul = bulleto.GetComponent<Bullet>();
+            if (bul != null)
+            {
+                bul.DeactivateBullet();
+            }
+        }
     }
 
     private IEnumerator CheckForPlayers()
@@ -41,8 +86,8 @@ public class EnemySpawner : NetworkBehaviour
             yield return null;
         }
 
-        StartCoroutine(SpawnDelayed());
-        StartCoroutine(RaidEvent());
+        routines.Add(StartCoroutine(SpawnDelayed()));
+        routines.Add(StartCoroutine(RaidEvent()));
     }
 
     [Server]

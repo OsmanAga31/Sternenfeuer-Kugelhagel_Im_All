@@ -14,7 +14,7 @@ public class HighScoreMenu : MonoBehaviour
 
     private void OnEnable()
     {
-        localPlayerName = HubManager.Instance.getName() ;
+        localPlayerName = HubManager.Instance.getName();
 
         HubManager.Instance.nameInputField.onValueChanged.AddListener(UpdatePlayername); // add listener
 

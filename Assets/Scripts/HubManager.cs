@@ -12,7 +12,6 @@ public class HubManager : NetworkBehaviour
     public static HubManager Instance;
 
     [SerializeField] private Button startButton;
-    //[SerializeField] private TMP_InputField nameInputField;
     private TMP_Text buttonText;
     private bool gameIsRunning = false;
 
@@ -41,11 +40,6 @@ public class HubManager : NetworkBehaviour
 
     }
 
-    //public void SubscribeToValueChange()
-    //{
-    //    nameInputField.onValueChanged.AddListener(UpdateName);
-    //}
-
     [Server]
     public void StartGame()
     {
@@ -68,17 +62,5 @@ public class HubManager : NetworkBehaviour
             gameIsRunning = false;
         }
     }
-
-    //public string GetPlayerName()
-    //{
-    //    return nameInputField.text;
-    //}
-
-    //[ServerRpc]
-    //public void UpdateName(string val) 
-    //{ 
-
-    //    OnInputfieldChangeValue?.Invoke(val);
-    //}
 
 }

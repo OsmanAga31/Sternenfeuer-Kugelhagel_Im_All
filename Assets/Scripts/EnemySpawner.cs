@@ -62,7 +62,7 @@ public class EnemySpawner : NetworkBehaviour
             Enemy1 AnnaMay = enemy.GetComponent<Enemy1>();
             if (AnnaMay != null)
             {
-                AnnaMay.Die();
+                AnnaMay.Die(null);
             }
         }
 

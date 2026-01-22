@@ -8,7 +8,7 @@ public class ScoreUI : MonoBehaviour
     private PlayerController localPlayer;
     private bool isInitialized = false;
     private int retryCount = 0;
-    private const int MAX_RETRIES = 20;
+    private const int MAX_RETRIES = 100;
 
 
     private void Start()

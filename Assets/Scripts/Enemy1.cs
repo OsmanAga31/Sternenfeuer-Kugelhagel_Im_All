@@ -120,7 +120,7 @@ public class Enemy1 : NetworkBehaviour, IDamagable
     }
 
     // nur wenn Enemy wirklich stirbt und nicht bei OnStopServer
-    private void Die(NetworkObject shooter)
+    public void Die(NetworkObject shooter)
     {
         //TimeManager.OnTick -= MoveOnTick;
         //if (shooter != null)

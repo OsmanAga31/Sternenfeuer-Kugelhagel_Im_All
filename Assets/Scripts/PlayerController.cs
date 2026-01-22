@@ -18,6 +18,7 @@ public class PlayerController : NetworkBehaviour, IDamagable
 {
     [Header("UI")]
     [SerializeField] private NameDisplay nameDisplay; // reference to the NameDisplay script
+    private TMP_InputField nameInputField;
 
     [Header("SyncVars")]
     private readonly SyncVar<string> playerName = new SyncVar<string>(); // name of the player
@@ -140,7 +141,12 @@ public class PlayerController : NetworkBehaviour, IDamagable
         }
 
         if (!IsOwner) return;
-        HubManager.Instance.OnInputfieldChangeValue.AddListener(UpdateNameUI);
+
+        nameInputField = TMP_InputField.FindAnyObjectByType<TMP_InputField>();
+        if (nameInputField != null)
+        {
+            nameInputField.onValueChanged.AddListener(UpdateNameUI);
+        }
     }
 
     private void OnPlayerNameChanged(string oldName, string newName, bool asServer)
@@ -155,9 +161,6 @@ public class PlayerController : NetworkBehaviour, IDamagable
     [ServerRpc]
     public void UpdateNameUI(string val)
     {
-        if (!IsOwner)
-            return;
-        
         playerName.Value = val;
     } 
 

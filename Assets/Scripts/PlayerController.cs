@@ -7,7 +7,6 @@ public enum ShootPattern
 {
     Straight,
     Spread,
-    Circular,
     Spiral,
     Wave
 }
@@ -83,13 +82,17 @@ public class PlayerController : NetworkBehaviour, IDamagable
     private Camera mainCamera;
     private MeshRenderer meshRenderer;
 
+    private void Awake()
+    {
+        meshRenderer = GetComponentInChildren<MeshRenderer>();
+    }
+
     private void Start() 
     { 
         inputActions = new InputSystem_Actions();
         inputActions.Player.Enable();
         //TimeManager.OnTick += OnServerTick;
         mainCamera = Camera.main;
-        meshRenderer = GetComponentInChildren<MeshRenderer>();
 
         //// Assign a color to the player (server-side)
         //if(IsServerInitialized)
@@ -110,6 +113,15 @@ public class PlayerController : NetworkBehaviour, IDamagable
         //playerHP.OnChange += OnPlayerHPChanged;
     }
 
+    public override void OnStartServer()
+    {
+        base.OnStartServer();
+
+        // assign color on server
+        AssignPlayerColor();
+    }
+
+
     public override void OnStartClient()
     {
         base.OnStartClient();
@@ -121,6 +133,17 @@ public class PlayerController : NetworkBehaviour, IDamagable
 
         // react to HP changes
         playerHP.OnChange += OnPlayerHPChanged;
+
+
+        // react to name changes
+        playerName.OnChange += OnPlayerNameChanged;
+
+        // apply initial color if already set (important for clients joining later)
+        if(playerColor.Value != Color.clear)
+        {
+            Debug.Log($"[Client] Applaying initial color: {playerColor.Value}");
+            ApplyColor(playerColor.Value);
+        }
 
         //// assign a color to the player (server-side)
         //if (IsServerInitialized)
@@ -134,7 +157,7 @@ public class PlayerController : NetworkBehaviour, IDamagable
         //{
         //    ApplyColor(playerColor.Value);
         //}
-        
+
         //// react to HP changes
         //playerHP.OnChange += OnPlayerHPChanged;
 
@@ -146,7 +169,6 @@ public class PlayerController : NetworkBehaviour, IDamagable
             if (nameDisplay != null)
                 nameDisplay.SetName(playerName);
         }
-        playerName.OnChange += OnPlayerNameChanged;
     }
 
     ///TODO:
@@ -169,13 +191,6 @@ public class PlayerController : NetworkBehaviour, IDamagable
     // react to name changes so other clients see the updated name
     // playerName.OnChange += OnPlayerNameChanged;
 
-    public override void OnStartServer()
-    {      
-        base.OnStartServer();
-
-        // assign color on server
-        AssignPlayerColor();
-    }
 
     [ServerRpc(RequireOwnership = true)]
     private void SetPlayerNameServerRPC(string name)
@@ -317,10 +332,15 @@ public class PlayerController : NetworkBehaviour, IDamagable
     }
 
     // called automatically when playerColor SyncVar changes (on ALL clients)
-    private void OnPlayerColorChanged(Color odlColor, Color newColor, bool asServer) 
+    private void OnPlayerColorChanged(Color oldColor, Color newColor, bool asServer) 
     {
-        // apply the new color to this player
-        ApplyColor(newColor);
+        if (!asServer)
+        {
+            Debug.Log($"[{(asServer ? "Server" : "Client")}] OnPlayerColorChanged: {oldColor} -> {newColor}");
+
+            // apply the new color (only on clients, server already applied it)
+            ApplyColor(newColor);
+        }
     }
 
     private void ApplyColor(Color color) 

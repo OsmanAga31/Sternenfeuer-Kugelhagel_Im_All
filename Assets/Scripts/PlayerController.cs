@@ -245,6 +245,9 @@ public class PlayerController : NetworkBehaviour, IDamagable
         // if we are the client and owner, request move
         if (IsClientInitialized && IsOwner)
         {
+            if (inputActions == null)
+                return;
+            
             // read movement input 
             Vector2 movementInput = inputActions.Player.Move.ReadValue<Vector2>();
             MoveServerRPC(movementInput);

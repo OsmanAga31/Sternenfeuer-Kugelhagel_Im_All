@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 23. Jan 2026 um 16:23
+-- Erstellungszeit: 23. Jan 2026 um 16:36
 -- Server-Version: 10.4.32-MariaDB
 -- PHP-Version: 8.2.12
 
@@ -75,7 +75,8 @@ INSERT INTO `highscores` (`id`, `player_name`, `score`, `created_at`) VALUES
 (71, 'SpiderMan (Tobey Maquire)', 1930, '2026-01-23 15:11:42'),
 (72, 'IronMan', 3085, '2026-01-23 15:11:42'),
 (73, 'Schweiß', 539, '2026-01-23 15:17:06'),
-(74, 'Axel', 1829, '2026-01-23 15:17:06');
+(74, 'Axel', 1829, '2026-01-23 15:17:06'),
+(75, 'Hackerman', 27500, '2026-01-23 15:35:24');
 
 --
 -- Indizes der exportierten Tabellen
@@ -95,7 +96,7 @@ ALTER TABLE `highscores`
 -- AUTO_INCREMENT für Tabelle `highscores`
 --
 ALTER TABLE `highscores`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=75;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=76;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

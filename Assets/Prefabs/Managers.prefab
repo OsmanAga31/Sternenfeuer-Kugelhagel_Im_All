@@ -9,9 +9,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6325050639932891261}
+  - component: {fileID: 5143164847671477800}
+  - component: {fileID: 8591129124946624925}
   - component: {fileID: 2826094552047879054}
   - component: {fileID: 1243057757500472684}
   - component: {fileID: 5294962965244432468}
+  - component: {fileID: 1863199518390002242}
+  - component: {fileID: 2757189551167521845}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -34,6 +38,39 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5143164847671477800
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1103054617333583936}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9d4f60a4c435fe419ac52c093b0dbf0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 0
+  _addedNetworkObject: {fileID: 1243057757500472684}
+  _networkObjectCache: {fileID: 1243057757500472684}
+  scoreListObjects: {fileID: 0}
+--- !u!114 &8591129124946624925
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1103054617333583936}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df3b7c1ffc149a646ba9d08f56c6fe40, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 1
+  _addedNetworkObject: {fileID: 1243057757500472684}
+  _networkObjectCache: {fileID: 1243057757500472684}
+  startButton: {fileID: 0}
+  nameInputField: {fileID: 0}
 --- !u!114 &2826094552047879054
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -46,20 +83,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b7643d0fff0b9646b7fdea181170f41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 0
+  _componentIndexCache: 2
   _addedNetworkObject: {fileID: 1243057757500472684}
   _networkObjectCache: {fileID: 1243057757500472684}
-  isGameOver: 0
   victoryMessage: {fileID: 0}
+  gameOverMessage: {fileID: 0}
   enemyPrefab: {fileID: 2970889875794532424, guid: f7448500b5ce81b4684995b397f91da5, type: 3}
   enemyBossPrefab: {fileID: 2970889875794532424, guid: d50813d2b92e9444d895a65460a30697, type: 3}
   minPlayersToStart: 1
-  spawnInterval: 4
+  spawnInterval: 1
   minSpawnRadius: 30
   spawnRadius: 40
-  spawnCountEnemies: 10
+  spawnCountEnemies: 200
   raidInterval: 60
-  raidEnemyCount: 5
+  raidEnemyCount: 10
 --- !u!114 &1243057757500472684
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -79,8 +116,12 @@ MonoBehaviour:
   <PredictedSpawn>k__BackingField: {fileID: 0}
   <PredictedOwner>k__BackingField: {fileID: 0}
   NetworkBehaviours:
+  - {fileID: 5143164847671477800}
+  - {fileID: 8591129124946624925}
   - {fileID: 2826094552047879054}
   - {fileID: 5294962965244432468}
+  - {fileID: 1863199518390002242}
+  - {fileID: 2757189551167521845}
   InitializedParentNetworkBehaviour: {fileID: 0}
   InitializedNestedNetworkObjects: []
   RuntimeParentNetworkBehaviour: {fileID: 0}
@@ -91,7 +132,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: -8584324363064222466
+  _initializedTimestamp: -8584324247805895915
   NetworkObserver: {fileID: 0}
   _enablePrediction: 0
   _predictionType: 0
@@ -127,7 +168,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1df2c1634dd4c44429f01ce7237b10e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 1
+  _componentIndexCache: 3
   _addedNetworkObject: {fileID: 1243057757500472684}
   _networkObjectCache: {fileID: 1243057757500472684}
   ObjectsToSpawn:
@@ -135,3 +176,36 @@ MonoBehaviour:
   - {fileID: 2970889875794532424, guid: f7448500b5ce81b4684995b397f91da5, type: 3}
   - {fileID: 2970889875794532424, guid: d50813d2b92e9444d895a65460a30697, type: 3}
   prewarmAmount: f40100003200000005000000
+--- !u!114 &1863199518390002242
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1103054617333583936}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31d98c31d1d7fac45ad9b2cc0e1d3e00, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 4
+  _addedNetworkObject: {fileID: 1243057757500472684}
+  _networkObjectCache: {fileID: 1243057757500472684}
+  smallEnemyPoints: 100
+  largeEnemyPoints: 150
+--- !u!114 &2757189551167521845
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1103054617333583936}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b363c023ec58b624f81b8e4494c30139, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 5
+  _addedNetworkObject: {fileID: 1243057757500472684}
+  _networkObjectCache: {fileID: 1243057757500472684}
+  baseUrl: http://localhost/Sternenfeuer-Kugelhagel_Im_All/API

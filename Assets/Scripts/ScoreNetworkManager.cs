@@ -1,3 +1,5 @@
+// This and the PHP are made with AI.
+
 using System;
 using System.Collections;
 using System.Text;

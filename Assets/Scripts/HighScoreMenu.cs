@@ -23,6 +23,7 @@ public class HighScoreMenu : MonoBehaviour
         ScoreNetworkManager.OnMyBestScoreReceived += UpdateMyBestScore;
 
         ShowHighscores();
+        UpdateAll();
     }
 
     private void OnDisable()
@@ -73,4 +74,11 @@ public class HighScoreMenu : MonoBehaviour
     {
         myBestScoreText.text = $"Mein Rekord: {score}";
     }
+
+    private void UpdateAll()
+    {
+        ScoreNetworkManager.Instance.RequestShowScores();
+        ScoreNetworkManager.Instance.RequestMyBestScore(localPlayerName);
+    }
+
 }

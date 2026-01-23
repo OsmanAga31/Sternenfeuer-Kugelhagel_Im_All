@@ -426,12 +426,27 @@ public class PlayerController : NetworkBehaviour, IDamagable
 
             // mark THIS player as dead in ScoreManager
             ScoreManager.Instance?.SetPlayerDead(OwnerId);
-            
+
             ScoreManager.Instance?.CalculateFinalScore(OwnerId);
 
-            // save highscore in database
-            ScoreNetworkManager.Instance?.RequestSaveScore(PlayerName, ScoreManager.Instance.GetPlayerScore(OwnerId));
+            //SaveScore();
         }
+    }
+
+    [Server]
+    public void Heal(int healAmount)
+    {
+        // only process healing on server
+        if (!IsServerInitialized) return;
+        playerHP.Value += healAmount;
+        if (playerHP.Value > maxHP) playerHP.Value = maxHP;
+        Debug.Log($"[Server] Player healed by {healAmount}, current HP: {playerHP.Value}");
+    }
+
+    public void SaveScore()
+    {
+        // save highscore in database
+        ScoreNetworkManager.Instance?.RequestSaveScore(PlayerName, ScoreManager.Instance.GetPlayerScore(OwnerId));
     }
 
     // Callback for when player HP changes

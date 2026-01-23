@@ -110,6 +110,17 @@ public class ScoreManager : NetworkBehaviour
         Debug.Log($"[Server] Added {points} points to player {playerId}. New score: {newScore}");
     }
 
+    // reset player score
+    [Server]
+    public void ResetPlayerScore(int playerId)
+    {
+        if (playerScores.ContainsKey(playerId))
+        {
+            playerScores[playerId] = 0;
+            Debug.Log($"[Server] Reset score for player {playerId}");
+        }
+    }
+
     [Server]
     public void SetPlayerDead(int playerId)
     {

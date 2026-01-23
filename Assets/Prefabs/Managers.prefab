@@ -49,6 +49,8 @@ MonoBehaviour:
   _componentIndexCache: 0
   _addedNetworkObject: {fileID: 1243057757500472684}
   _networkObjectCache: {fileID: 1243057757500472684}
+  isGameOver: 0
+  victoryMessage: {fileID: 0}
   enemyPrefab: {fileID: 2970889875794532424, guid: f7448500b5ce81b4684995b397f91da5, type: 3}
   enemyBossPrefab: {fileID: 2970889875794532424, guid: d50813d2b92e9444d895a65460a30697, type: 3}
   minPlayersToStart: 1
@@ -89,7 +91,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: -8584326089140495648
+  _initializedTimestamp: -8584324363064222466
   NetworkObserver: {fileID: 0}
   _enablePrediction: 0
   _predictionType: 0

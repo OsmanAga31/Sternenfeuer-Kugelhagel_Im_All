@@ -9,6 +9,11 @@ public class EnemySpawner : NetworkBehaviour
 {
     public static EnemySpawner Instance;
 
+    public bool isGameOver = false;
+
+    [Header("UI Elements")]
+    [SerializeField] private GameObject victoryMessage;
+
     [Header("Prefabs")]
     [SerializeField] private GameObject enemyPrefab;
     [SerializeField] private GameObject enemyBossPrefab;
@@ -36,6 +41,15 @@ public class EnemySpawner : NetworkBehaviour
         base.OnStartServer();
         if (IsServerInitialized && Instance == null)
             Instance = this;
+
+        victoryMessage.SetActive(false);
+    }
+
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
+
+        victoryMessage.SetActive(false);
     }
 
     [Server]
@@ -44,10 +58,12 @@ public class EnemySpawner : NetworkBehaviour
         if (minSpawnRadius > spawnRadius)
             spawnRadius = minSpawnRadius;
         routines.Add(StartCoroutine(CheckForPlayers()));
+        isGameOver = false;
+        victoryMessage.SetActive(false);
     }
 
     [Server]
-    public void StopGame()
+    public void StopGame(bool disableScreen = true)
     {
         foreach (Coroutine routine in routines)
         {
@@ -75,6 +91,26 @@ public class EnemySpawner : NetworkBehaviour
                 bul.DeactivateBullet();
             }
         }
+
+
+        isGameOver = false;
+        if (!disableScreen)
+            return;
+
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        foreach (GameObject player in players)
+        {
+            PlayerController pc = player.GetComponent<PlayerController>();
+            if (pc != null)
+            {
+                pc.Heal(pc.MaxHP);
+                pc.SaveScore();
+                ScoreManager.Instance.ResetPlayerScore(pc.PlayerOwnerId);
+            }
+        }
+
+        victoryMessage.SetActive(false);
+
     }
 
     private IEnumerator CheckForPlayers()
@@ -119,11 +155,24 @@ public class EnemySpawner : NetworkBehaviour
 
     private IEnumerator SpawnDelayed()
     {
-        for (int i = 0; i < spawnCountEnemies; i++)
+        for (int i = 0; i < spawnCountEnemies && !isGameOver; i++)
         {
             yield return new WaitForSeconds(spawnInterval);
             SpawnEnemy(false);
         }
+        ShowVictoryMessage();
+    }
+
+    [ObserversRpc]
+    private void ShowVictoryMessage()
+    {
+        victoryMessage.SetActive(false);
+
+        if (!isGameOver)
+            victoryMessage.SetActive(true);
+
+        if (IsServerInitialized)
+            StopGame(disableScreen:false);
     }
 
     private IEnumerator RaidEvent()

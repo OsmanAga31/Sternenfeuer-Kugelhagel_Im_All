@@ -15,7 +15,6 @@ public class Enemy1 : NetworkBehaviour, IDamagable
     [SerializeField] private float bulletLifeTime = 10f;
 
     private Coroutine shooter;
-    private string targetPoolName = "Bullets";
     private bool isAlive = true;
     private float speed;
     private bool isSubscribedToOnTick_GetPlayers = false;

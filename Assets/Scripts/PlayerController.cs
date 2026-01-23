@@ -475,7 +475,10 @@ public class PlayerController : NetworkBehaviour, IDamagable
         // safety check: only run on server
         if (!IsServerInitialized) return;
 
-        Debug.Log($"[Server] Shooting with pattern: {currentPattern}");
+        // Check if player is alive
+        if (ScoreManager.Instance.IsPlayerDead(OwnerId)) return;
+
+            Debug.Log($"[Server] Shooting with pattern: {currentPattern}");
 
         // execute the right shooting pattern based on currentPattern
         switch (currentPattern)

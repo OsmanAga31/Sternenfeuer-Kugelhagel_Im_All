@@ -209,7 +209,7 @@ Bullets und Gegner werden nicht immer neu erstellt sondern wiederverwendet.
 Das ist viel schneller!
 - 500 Bullets werden vorgeladen
 - 50 normale Gegner werden vorgeladen
-- 50 Boss-Gegner werden vorgeladen
+- 5 Boss-Gegner werden vorgeladen
 
 ### 3. Datenbank für Highscores
 Mit MySQL und PHP. Man kann die Top 10 sehen und seinen eigenen Rekord nachschauen.

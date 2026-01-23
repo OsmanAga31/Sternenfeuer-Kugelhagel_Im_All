@@ -15,10 +15,6 @@ public class ScoreUI : MonoBehaviour
     {
         if(scoreText == null)
             scoreText = GetComponentInChildren<TextMeshProUGUI>();
-        //    scoreText = transform.parent.GetComponentInChildren<TextMeshProUGUI>();
-
-        //if (ScoreManager.Instance != null)
-        //    ScoreManager.Instance.OnPlayerScoreChanged += OnPlayerScoreChanged;
 
         // show initial text
         if(scoreText != null )
@@ -28,6 +24,8 @@ public class ScoreUI : MonoBehaviour
         FindLocalPlayer();
     }
 
+    // This method repeatedly searches until either
+    // the local player is found or the maximum retry limit is reached
     private void FindLocalPlayer()
     {
         retryCount++;
@@ -82,12 +80,6 @@ public class ScoreUI : MonoBehaviour
         Debug.Log("[ScoreUI] Initialized and subscribed to score changes");
     }
 
-    //private void Update()
-    //{
-    //    //UpdateScore(ScoreManager.Instance?.BaseScore ?? 0);
-    //    UpdateScoreDisplay();
-    //}
-
     private void OnPlayerScoreChanged(int playerId, int newScore)
     {
         // only update if its local player
@@ -125,30 +117,11 @@ public class ScoreUI : MonoBehaviour
             return;
         }
 
-        //// Holt genau EINEN PlayerController (kein Array!)
-        //var player = FindFirstObjectByType<PlayerController>();
-
-        //if (player == null)
-        //{
-        //    scoreText.text = "Score: 0";
-        //    return;
-        //}
-
-        //string playerName = !string.IsNullOrEmpty(localPlayer.PlayerName)
-        //    ? localPlayer.PlayerName
-        //    : $"Player{localPlayer.PlayerOwnerId}";
-
         int score = ScoreManager.Instance?.GetPlayerScore(localPlayer.PlayerOwnerId) ?? 0;
         scoreText.text = $"Score: {score}";
 
         Debug.Log($"[ScoreUI] Updated display - Player ID: {localPlayer.PlayerOwnerId}, Score: {score}");
     }
-
-    //private void UpdateScore(int score)
-    //{
-    //    if (scoreText != null)
-    //        scoreText.text = $"Score: {score}";
-    //}
 
     private void OnDestroy()
     {

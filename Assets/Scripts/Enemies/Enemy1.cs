@@ -127,31 +127,6 @@ public class Enemy1 : NetworkBehaviour, IDamagable
     // nur wenn Enemy wirklich stirbt und nicht bei OnStopServer
     public void Die(NetworkObject shooter)
     {
-        //TimeManager.OnTick -= MoveOnTick;
-        //if (shooter != null)
-        //    StopCoroutine(shooter);
-        //Despawn(DespawnType.Pool);
-        //Debug.Log("Enemy1 Destroyed");
-        //int points = ScoreManager.Instance.GetEnemyPoints(isBoss);
-        //ScoreManager.Instance.AddEnemyPointsServer(points);
-
-
-        //TimeManager.OnTick -= MoveOnTick;
-        //if (shooter != null) StopCoroutine(shooter);
-
-        //int points = isBoss ? 300 : 100;
-        //if (ScoreManager.Instance != null)
-        //{
-        //    ScoreManager.Instance.AddEnemyPointsServer(points);
-        //    Debug.Log($"Enemy besiegt! +{points} Punkte (Score: {ScoreManager.Instance.BaseScore})");
-        //}
-        //else
-        //{
-        //    Debug.LogWarning("ScoreManager nicht bereit oder nicht Server!");
-        //}
-
-        //isAlive = false;
-        //Despawn(DespawnType.Pool);
 
         TimeManager.OnTick -= MoveOnTick;
         if (shooter != null)

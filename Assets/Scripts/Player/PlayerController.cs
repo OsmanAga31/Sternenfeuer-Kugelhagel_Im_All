@@ -92,26 +92,8 @@ public class PlayerController : NetworkBehaviour, IDamagable
     { 
         inputActions = new InputSystem_Actions();
         inputActions.Player.Enable();
-        //TimeManager.OnTick += OnServerTick;
         mainCamera = Camera.main;
 
-        //// Assign a color to the player (server-side)
-        //if(IsServerInitialized)
-        //{
-        //    AssignPlayerColor();
-        //}
-
-        //// react to color changes (for clients)
-        //playerColor.OnChange += OnPlayerColorChanged;
-
-        //// set initial color, if already existing
-        //if(playerColor.Value != Color.clear)
-        //{
-        //    ApplyColor(playerColor.Value);
-        //}
-
-        //// react to HP changes
-        //playerHP.OnChange += OnPlayerHPChanged;
     }
 
     public override void OnStartServer()
@@ -165,22 +147,6 @@ public class PlayerController : NetworkBehaviour, IDamagable
             ApplyColor(playerColor.Value);
         }
 
-        //// assign a color to the player (server-side)
-        //if (IsServerInitialized)
-        //{
-        //    AssignPlayerColor();
-        //}
-
-        //// react to color changes (for clients)
-        //playerColor.OnChange += OnPlayerColorChanged;
-        //if (playerColor.Value != Color.clear)
-        //{
-        //    ApplyColor(playerColor.Value);
-        //}
-
-        //// react to HP changes
-        //playerHP.OnChange += OnPlayerHPChanged;
-
         // when a new client starts, update the name display
         if (nameDisplay != null)
         {
@@ -190,11 +156,6 @@ public class PlayerController : NetworkBehaviour, IDamagable
         // set name only for Owner (after Network-Init)
         if (IsOwner)
         {
-            //string playerName = $"Player{Owner.ClientId}";
-            //SetPlayerNameServerRPC(playerName);
-            //if (nameDisplay != null)
-            //    nameDisplay.SetName(playerName);
-
             HubManager.Instance.nameInputField = TMP_InputField.FindAnyObjectByType<TMP_InputField>();
             if (HubManager.Instance.nameInputField != null)
             {
@@ -203,28 +164,6 @@ public class PlayerController : NetworkBehaviour, IDamagable
 
         }
     }
-
-    ///TODO:
-
-    // --------------- Name Handling --------------- 
-    // GameManager or Login system should be implemented to get player names
-    //// set player name 
-    //if (IsOwner)
-    //{
-    //   // get name from for example Login or input field
-    //   string username = MyGameManager.LocalUserName; // placeholder for actual name retrieval
-
-    //   // fill SyncVar
-    //   SetPlayerNameServerRPC(username);
-
-    //   // update local UI instantly
-    //   nameDisplay.SetName(username);
-    //}
-
-    // react to name changes so other clients see the updated name
-    // playerName.OnChange += OnPlayerNameChanged;
-
-
 
     [ServerRpc(RequireOwnership = true)]
     private void SetPlayerNameServerRPC(string name)
@@ -313,7 +252,6 @@ public class PlayerController : NetworkBehaviour, IDamagable
     private void Move(Vector2 _input) 
     {
         Vector3 move = new Vector3(_input.x, 0, _input.y);
-        //cc.Move(move * playerSpeed * (float)TimeManager.TickDelta);
         transform.Translate(move * playerSpeed * (float)TimeManager.TickDelta, Space.World);
     }
 
@@ -571,7 +509,7 @@ public class PlayerController : NetworkBehaviour, IDamagable
         Bullet bullet = bulletNetObj.GetComponent<Bullet>();
         if(bullet != null)
         {
-            // WICHTIG: "this.NetworkObject" ist die Referenz auf diesen Player!
+            
             NetworkObject shooterRef = this.NetworkObject;
 
             Debug.Log($"[PlayerController] Passing shooter to bullet:");
@@ -606,7 +544,5 @@ public class PlayerController : NetworkBehaviour, IDamagable
 
         playerName.OnChange -= OnPlayerNameChanged;
 
-        //inputActions?.Player.Disable();
-        //inputActions?.Disable();
     }
 }

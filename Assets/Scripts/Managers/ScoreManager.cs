@@ -11,7 +11,6 @@ public class ScoreManager : NetworkBehaviour
     [SerializeField] private int smallEnemyPoints = 100;
     [SerializeField] private int largeEnemyPoints = 150;
 
-    //[SerializeField] private readonly SyncVar<int> baseScore = new (0);
 
     // dictionary for scores per player
     private readonly SyncDictionary<int, int> playerScores = new SyncDictionary<int, int>();
@@ -33,8 +32,6 @@ public class ScoreManager : NetworkBehaviour
         return playerScores.TryGetValue(playerId, out var score) ? score : 0;
     }
 
-    //public int BaseScore => baseScore.Value;
-    //public System.Action<int> OnScoreChanged; // for UI
 
     private int deadPlayersCount = 0;
 
@@ -93,7 +90,6 @@ public class ScoreManager : NetworkBehaviour
     [Server]
     public void AddPointsToPlayerServer(int playerId, int points)
     {
-        //if (gameOver) return;
 
         // check if this specific player is still alive
         if(playerAliveStatus.TryGetValue(playerId, out bool isAlive) && !isAlive)
@@ -159,21 +155,6 @@ public class ScoreManager : NetworkBehaviour
     [Server]
     public void CalculateFinalScore(int playerId)
     {
-        ////if(gameOver) return; 
-
-        ////float survivalSeconds = Time.time - gameStartTime;
-
-        ////int finalScore = Mathf.RoundToInt(baseScore.Value * survivalSeconds);
-
-        //float totalGameTime = Time.time - gameStartTime;
-
-        //Debug.Log($"=== GAME OVER - ALL PlAYERS DEAD ===");
-        //Debug.Log($"Total Game Time: {totalGameTime:F1}s");
-
-        //foreach (var kvp in playerScores)
-        //{
-        //    Debug.Log($"Player {kvp.Key}: {kvp.Value} points");
-        //}
 
         //gameOver = true;
         if (!playerScores.ContainsKey(playerId))
@@ -203,11 +184,6 @@ public class ScoreManager : NetworkBehaviour
         Debug.Log($"Zeit-Bonus: {timeBonus}");
         Debug.Log($"FINAL SCORE: {finalScore}");
     }
-
-    //private void BaseScoreChanged(int old, int newVal,bool asServer)
-    //{
-    //    OnScoreChanged?.Invoke(newVal);
-    //}
 
     private void OnDestroy()
     {

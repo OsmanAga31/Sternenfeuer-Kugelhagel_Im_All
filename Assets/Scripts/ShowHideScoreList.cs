@@ -21,7 +21,14 @@ public class ShowHideScoreList : NetworkBehaviour
 
     public void Toggle(bool setActive)
     {
-        scoreListObjects.SetActive(setActive);
+        if (scoreListObjects != null)
+            scoreListObjects.SetActive(setActive);
+    }
+
+    [ObserversRpc]
+    public void ToggleForAll(bool setActive)
+    {
+        Toggle(setActive);
     }
 
     public override void OnStartClient()

@@ -4,15 +4,17 @@ using System.Collections;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Xml.Serialization;
+using FishNet.Object.Synchronizing;
 
 public class EnemySpawner : NetworkBehaviour
 {
     public static EnemySpawner Instance;
 
-    public bool isGameOver = false;
+    public readonly SyncVar<bool> isGameOver = new SyncVar<bool>(false);
 
     [Header("UI Elements")]
     [SerializeField] private GameObject victoryMessage;
+    [SerializeField] private GameObject gameOverMessage;
 
     [Header("Prefabs")]
     [SerializeField] private GameObject enemyPrefab;
@@ -42,14 +44,15 @@ public class EnemySpawner : NetworkBehaviour
         if (IsServerInitialized && Instance == null)
             Instance = this;
 
-        victoryMessage.SetActive(false);
+        DeactivateGOVscreens();
+       
     }
 
     public override void OnStartClient()
     {
         base.OnStartClient();
 
-        victoryMessage.SetActive(false);
+        DeactivateGOVscreensClient();
     }
 
     [Server]
@@ -58,8 +61,20 @@ public class EnemySpawner : NetworkBehaviour
         if (minSpawnRadius > spawnRadius)
             spawnRadius = minSpawnRadius;
         routines.Add(StartCoroutine(CheckForPlayers()));
-        isGameOver = false;
+        isGameOver.Value = false;
+        DeactivateGOVscreens();
+    }
+
+    [ObserversRpc]
+    private void DeactivateGOVscreens()
+    {
+        DeactivateGOVscreensClient();
+    }
+
+    private void DeactivateGOVscreensClient()
+    {
         victoryMessage.SetActive(false);
+        gameOverMessage.SetActive(false);
     }
 
     [Server]
@@ -93,7 +108,7 @@ public class EnemySpawner : NetworkBehaviour
         }
 
 
-        isGameOver = false;
+        isGameOver.Value = false;
         if (!disableScreen)
             return;
 
@@ -109,7 +124,8 @@ public class EnemySpawner : NetworkBehaviour
             }
         }
 
-        victoryMessage.SetActive(false);
+        DeactivateGOVscreens();
+       
 
     }
 
@@ -155,24 +171,27 @@ public class EnemySpawner : NetworkBehaviour
 
     private IEnumerator SpawnDelayed()
     {
-        for (int i = 0; i < spawnCountEnemies && !isGameOver; i++)
+        for (int i = 0; i < spawnCountEnemies && !isGameOver.Value; i++)
         {
             yield return new WaitForSeconds(spawnInterval);
             SpawnEnemy(false);
         }
-        ShowVictoryMessage();
+        ShowVictoryMessage(isGameOver.Value);
     }
 
     [ObserversRpc]
-    private void ShowVictoryMessage()
+    public void ShowVictoryMessage(bool isVictory)
     {
-        victoryMessage.SetActive(false);
+        DeactivateGOVscreensClient();
+       
 
-        if (!isGameOver)
+        if (!isVictory)
             victoryMessage.SetActive(true);
+        else
+            gameOverMessage.SetActive(true);
 
         if (IsServerInitialized)
-            StopGame(disableScreen:false);
+            StopGame(disableScreen: false);
     }
 
     private IEnumerator RaidEvent()

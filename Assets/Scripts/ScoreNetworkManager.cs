@@ -73,6 +73,8 @@ public class ScoreNetworkManager : NetworkBehaviour
         ServerGetMyBestScore(playerName);
     }
 
+   
+
     // =================================================================================
     // SERVER SIDE (Logik läuft nur auf dem Server/Host)
     // =================================================================================

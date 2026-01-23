@@ -35,13 +35,13 @@ public class HubManager : NetworkBehaviour
         else
         {
             buttonText = startButton.GetComponentInChildren<TMP_Text>();
-            startButton.onClick.AddListener(StartGame);
+            startButton.onClick.AddListener(StartGameButton);
         }
 
     }
 
     [Server]
-    public void StartGame()
+    public void StartGameButton()
     {
         if (EnemySpawner.Instance == null)
         {
@@ -61,8 +61,18 @@ public class HubManager : NetworkBehaviour
             buttonText.text = "Start Game";
             gameIsRunning = false;
         }
-        ShowHideScoreList.Instance.Toggle(!gameIsRunning);
+        ShowHideScoreList.Instance.ToggleForAll(!gameIsRunning);
         ToggleNameField(!gameIsRunning);
+        // reset alive status for all players
+
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        foreach (GameObject player in players)
+        {
+            int playerId = player.GetComponent<PlayerController>().PlayerOwnerId;
+            ScoreManager.Instance.playerAliveStatus[playerId] = true;
+        }
+
+
     }
 
     public string getName()

@@ -147,6 +147,9 @@ public class Bullet : NetworkBehaviour
     [Server]
     public void DeactivateBullet()
     {
+        if (!IsServerInitialized)
+            return;
+
         if (bul != null)
         {
             StopCoroutine(bul);

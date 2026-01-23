@@ -429,7 +429,6 @@ public class PlayerController : NetworkBehaviour, IDamagable
 
             ScoreManager.Instance?.CalculateFinalScore(OwnerId);
 
-            //SaveScore();
         }
     }
 

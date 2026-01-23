@@ -81,7 +81,13 @@ public class Enemy1 : NetworkBehaviour, IDamagable
 
         });
 
-        playerLocation = players[0];
+        foreach (GameObject player in players)
+        {
+            if (ScoreManager.Instance.IsPlayerDead(player.GetComponent<PlayerController>().PlayerOwnerId))
+                continue;
+            playerLocation = player;
+            break;
+        }
 
         shooter = StartCoroutine(Shoot());
 

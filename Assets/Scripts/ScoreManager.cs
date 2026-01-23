@@ -17,7 +17,7 @@ public class ScoreManager : NetworkBehaviour
     private readonly SyncDictionary<int, int> playerScores = new SyncDictionary<int, int>();
 
     // track wich players ar alive (can still earn points)
-    private readonly SyncDictionary<int, bool> playerAliveStatus = new SyncDictionary<int, bool>();
+    public readonly SyncDictionary<int, bool> playerAliveStatus = new SyncDictionary<int, bool>();
 
     // dictionary for spawn times of players
     private readonly SyncDictionary<int, float> playerSpawnTimes = new SyncDictionary<int, float>();
@@ -35,6 +35,8 @@ public class ScoreManager : NetworkBehaviour
 
     //public int BaseScore => baseScore.Value;
     //public System.Action<int> OnScoreChanged; // for UI
+
+    private int deadPlayersCount = 0;
 
     public int GetEnemyPoints(bool isBoss) => isBoss? largeEnemyPoints: smallEnemyPoints;
 
@@ -121,6 +123,8 @@ public class ScoreManager : NetworkBehaviour
         }
     }
 
+    
+
     [Server]
     public void SetPlayerDead(int playerId)
     {
@@ -130,10 +134,18 @@ public class ScoreManager : NetworkBehaviour
 
             float survivalSeconds = Time.time - gameStartTime;
             int finalScore = GetPlayerScore(playerId);
+            deadPlayersCount++;
 
             Debug.Log($"=== PLAYER {playerId} DIED ===");
             Debug.Log($"Survival Time: {survivalSeconds:F1}s");
             Debug.Log($"Final Score: {finalScore}");
+
+            if (deadPlayersCount >= NetworkManager.ServerManager.Clients.Count)
+            {
+                Debug.Log("=== ALL PLAYERS DEAD - GAME OVER ===");
+                EnemySpawner.Instance.isGameOver.Value = true;
+                EnemySpawner.Instance.ShowVictoryMessage(EnemySpawner.Instance.isGameOver.Value);
+            }
         }
     }
 
